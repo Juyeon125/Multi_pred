@@ -1,0 +1,10 @@
+{
+    "usernameConfig": "###",
+    "passwordConfig": "###",
+    "mailServer":"smtp.gmail.com",
+    "mailPort": "465",
+    "dbHost":"127.0.0.1",
+    "dbUser":"root",
+    "dbPassword":"juyeon",
+    "db":"multi_pred"
+}
