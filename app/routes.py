@@ -197,16 +197,44 @@ def send_email(senders, receiver, content):
 
 @app.route('/test')
 def test():
-    ecami_path = "/home/juyeon/Program/Multi_Pred/multi_pred/app/eCAMI"  # python prediction.py
-    execute_path = os.path.join(ecami_path, "prediction.py")
-    input_path = os.path.join(ecami_path, "examples/prediction/input/test.faa")
-    kmer_db_path = os.path.join(ecami_path, "CAZyme")
-    output_path = os.path.join(ecami_path, "examples/prediction/output/new-output.txt")
 
-    subprocess.run(["python", execute_path,
-                    "-input", input_path,
-                    "-kmer_db", kmer_db_path,
-                    "-output", output_path])
+    """
+    ecami_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/eCAMI"  # python prediction.py
+    ecami_execute_path = os.path.join(ecami_path, "prediction.py")
+    ecami_input_path = os.path.join(ecami_path, "examples/prediction/input/test.faa")
+    ecami_kmer_db_path = os.path.join(ecami_path, "CAZyme")
+    ecami_output_path = os.path.join(ecami_path, "examples/prediction/output/new-output.txt")
+
+    subprocess.run(["python", ecami_execute_path,
+                    "-input", ecami_input_path,
+                    "-kmer_db", ecami_kmer_db_path,
+                    "-output", ecami_output_path])
+    """
+    """
+    deepec_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/deepec"
+    deepec_execute_path = os.path.join(deepec_path, "deepec.py")
+    deepec_input_path = os.path.join(deepec_path, "example/test.fa")
+    deepec_output_path = os.path.join(deepec_path, "output")
+
+    subprocess.run(["python", deepec_execute_path,
+                    "-i", deepec_input_path,
+                    "-o", deepec_output_path])
+    """
+    """
+    ecpred_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/ECPred/"
+    ecpred_execute_path = os.path.join(ecpred_path, "ECPred.jar")
+    ecpred_input_path = os.path.join(ecpred_path, "sample.fasta")
+    ecpred_output_path = os.path.join(ecpred_path, "results.tsv")
+
+    subprocess.run(["java", "-jar", ecpred_execute_path,
+                    "blast", ecpred_input_path,
+                    ecpred_path, "temp/",
+                    ecpred_output_path])
+    """
+    #DETECTv2는 실행이 안됨.  PATH 바꿔봤는데도 안됨.
+    detectv2_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/DETECTv2"
+    #detectv2_excute_path = os.path.join(detectv2_path, " ./sample.sh")
+    subprocess.run([detectv2_path, "./sample.sh"])
 
     return render_template('test.html')
 
