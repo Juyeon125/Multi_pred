@@ -2,6 +2,29 @@ import pymysql
 import connection
 import json
 
+
+def connect_result(ec_num):
+    conn = connection.connection()
+    try:
+        sql = "SELECT accepted_name, reaction FROM multi_pred.entry where ec_num =" + "'" + ec_num + "'"
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        row_num = cursor.rowcount
+    finally:
+        cursor.close()
+    if row_num > 0:
+        object_list = []
+        row = cursor.fetchall()
+        for row_data in row:
+            #json_object = {"accepted_name": row_data[0], "reaction": row_data[1]}
+            object_list.append(row_data[0])
+            object_list.append(row_data[1])
+        return object_list
+    return "fail"
+
+
+
+
 def get_dbSelect_login(email, pw):
     conn = connection.connection()
     try:
@@ -20,6 +43,7 @@ def get_dbSelect_login(email, pw):
         return json_object
     return "fail"
 
+
 def get_dbSelect_password(email, last):
     conn = connection.connection()
     try:
@@ -35,6 +59,7 @@ def get_dbSelect_password(email, last):
             result = row_data[0]
         return result
     return "fail"
+
 
 def get_tableSelect():
     conn = connection.connection()
@@ -53,6 +78,7 @@ def get_tableSelect():
             object_list.append(json_object)
         return object_list
     return "fail"
+
 
 def get_dbInsert_register(email, pw, first, last):
     conn = connection.connection()
@@ -76,6 +102,7 @@ def get_dbInsert_register(email, pw, first, last):
             cursor.close()
             return "true"
 
+
 def get_saveInfo_Select(mail):
     conn = connection.connection()
     try:
@@ -98,7 +125,8 @@ def get_saveInfo_Select(mail):
         object_list.append(row_num)
         print(object_list)
         return object_list
-            
+
+
 def get_dbInsert_history_1(mail, seq, ec_num, acc):
     conn = connection.connection()
     try:
