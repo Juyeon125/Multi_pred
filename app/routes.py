@@ -4,10 +4,11 @@ import os
 import subprocess
 import sys
 from datetime import datetime
-
+import pandas as pd
 import mysql_dao
 from flask import Flask, redirect, escape, render_template, request, session
 from flask_mail import Mail, Message
+from sklearn.metrics import precision_score, recall_score
 
 app = Flask(__name__)
 
@@ -36,7 +37,6 @@ sys.path.append("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/EMBOSS-6.6.0/
 
 ec_list = []
 acc_list = []
-
 
 # @app.route("/predict/algorithm", methods=['GET', 'POST'])
 def fun(ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
@@ -76,7 +76,7 @@ def fun(ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
     rec_ec = mysql_dao.connect_result(final_ec)
 
     final_result = {"final_ec": final_ec,
-                          "final_name": rec_ec[0], "final_reac": rec_ec[1]}
+                    "final_name": rec_ec[0], "final_reac": rec_ec[1]}
 
     return final_result
 
@@ -133,7 +133,7 @@ def predict_ecami(input_seq, result):
     ecami_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/eCAMI"
     ecami_execute_path = os.path.join(ecami_path, "prediction.py")
     ecami_kmer_db_path = os.path.join(ecami_path, "CAZyme")
-    ecami_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}.txt")
+    ecami_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}_ecami_output.txt")
 
     subprocess.run(["python3", ecami_execute_path,
                     "-input", ecami_input_path,
@@ -170,7 +170,7 @@ def predict_ecpred(input_seq, result):
 
     ecpred_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/ECPred/"
     ecpred_execute_path = os.path.join(ecpred_path, "ECPred.jar")
-    ecpred_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}.tsv")
+    ecpred_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}_ecpred_output.tsv")
 
     subprocess.run(["java", "-jar", ecpred_execute_path,
                     "blast", ecpred_input_path,
@@ -205,7 +205,7 @@ def predict_deepec(input_seq, result):
 
     deepec_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/deepec"
     deepec_execute_path = os.path.join(deepec_path, "deepec.py")
-    deepec_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}")
+    deepec_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}_deepec_output")
 
     subprocess.run(["python3", deepec_execute_path,
                     "-i", deepec_input_path,
@@ -274,6 +274,28 @@ def predict_all():
 
     return api_result
 
+
+seq_list = []
+y_true = []
+y_pred = []
+temp_result = {}
+data = pd.read_csv(r"EC number database_Archaea1.csv")
+
+#seq 긁기
+for i in data.SEQ[:20]:
+    seq_list.append(i)
+
+#EC number 정답 긁기
+for i in data.EC[:20]:
+    y_true.append(i)
+
+for i in range(len(data.SEQ[:20])):
+    predict_deepec(seq_list[i], result=temp_result)
+    deepec_result = temp_result['DeepEC']['deepec_ec']
+    y_pred.append(deepec_result)
+
+print(recall_score(y_true, y_pred, average='micro'))
+print(precision_score(y_true, y_pred, average='micro'))
 
 @app.route('/')
 def index():

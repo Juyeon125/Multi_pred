@@ -43,26 +43,26 @@
             success: function (res) {
                 txt = '';
 
-                txt += '<br><p style="font-weight: bold";>DeepEC : ' + res["DeepEC"].deepec_ec + '  Accuracy : ' + res["DeepEC"].deepec_acc * 100 + '</p>';
+                txt += '<br><h3 style="font-weight: bold; color:red;">Our recommendation results</h3>';
+                txt += '<br><p style="font-weight: bold; color:blue;">EC number : ' + res["final_result"].final_ec + '</p>';
+                txt += '<br><p style="font-weight: bold; color:blue;">Accepted_name : ' + res["final_result"].final_name + '</p>';
+                txt += '<br><p style="font-weight: bold; color:blue;">Reaction : ' + res["final_result"].final_reac + '</p><hr>';
+
+                txt += '<br><p style="font-weight: bold";>DeepEC : ' + res["DeepEC"].deepec_ec + '  Accuracy : ' + Math.round(res["DeepEC"].deepec_acc * 10000)/100 + '%</p>';
                 txt += '<br><p style="font-weight: bold";>Accepted_name : ' + res["DeepEC"].deepec_name + '</p>';
                 txt += '<br><p style="font-weight: bold";>Reaction : ' + res["DeepEC"].deepec_reac + '</p><hr>';
 
-                txt += '<br><p style="font-weight: bold";>ECPred : ' + res["ECPred"].ecpred_ec + '  Accuracy : ' + res["ECPred"].ecpred_acc * 100 + '</p>';
+                txt += '<br><p style="font-weight: bold";>ECPred : ' + res["ECPred"].ecpred_ec + '  Accuracy : ' + Math.round(res["ECPred"].ecpred_acc * 10000)/100 + '%</p>';
                 txt += '<br><p style="font-weight: bold";>Accepted_name : ' + res["ECPred"].ecpred_name + '</p>';
                 txt += '<br><p style="font-weight: bold";>Reaction : ' + res["ECPred"].ecpred_reac + '</p><hr>';
 
-                txt += '<br><p style="font-weight: bold";>DETECT : ' + res["DETECT"].detect_ec + '  Accuracy : ' + res["DETECT"].detect_acc * 100 + '</p>';
+                txt += '<br><p style="font-weight: bold";>DETECT : ' + res["DETECT"].detect_ec + '  Accuracy : ' + Math.round(res["DETECT"].detect_acc * 10000)/100 + '%</p>';
                 txt += '<br><p style="font-weight: bold";>Accepted_name : ' + res["DETECT"].detect_name + '</p>';
                 txt += '<br><p style="font-weight: bold";>Reaction : ' + res["DETECT"].detect_reac + '</p><hr>';
 
                 txt += '<br><p style="font-weight: bold";>eCAMI : ' + res["eCAMI"].ecami_ec + '</p>';
                 txt += '<br><p style="font-weight: bold";>Accepted_name : ' + res["eCAMI"].ecami_name + '</p>';
                 txt += '<br><p style="font-weight: bold";>Reaction : ' + res["eCAMI"].ecami_reac + '</p><hr>';
-
-                txt += '<br><p style="font-weight: bold";>Our recommendation results</p>';
-                txt += '<br><p style="font-weight: bold";>EC number : ' + res["final_result"].final_ec + '</p>';
-                txt += '<br><p style="font-weight: bold";>Accepted_name : ' + res["final_result"].final_name + '</p>';
-                txt += '<br><p style="font-weight: bold";>Reaction : ' + res["final_result"].final_reac + '</p><hr>';
 
                 document.getElementById("function_result").innerHTML = txt
             },
@@ -98,100 +98,99 @@
     {% extends "sidebar.html" %}
     {% block content %}
 
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <div class="input-group-append">
-                                <h1>Search EC number</h1>
-                            </div>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <h1>Search EC number</h1>
                         </div>
-                    </form>
-                    <ul class="navbar-nav ml-auto">
-                        <div class="topbar-divider d-none d-sm-block"></div>
-                        {% if loginId == '' %}
-                            <li class="nav-item dropdown no-arrow">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                   data-toggle="dropdown"
-                                   aria-haspopup="true" aria-expanded="false">
+                    </div>
+                </form>
+                <ul class="navbar-nav ml-auto">
+                    <div class="topbar-divider d-none d-sm-block"></div>
+                    {% if loginId == '' %}
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"
                       style="font-weight: bold; font-size: 20px;">LOGIN</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                     aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" href="login_page">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Login
-                                    </a>
-                                    <a class="dropdown-item" href="forgot_password_page">
-                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Forgot Password
-                                    </a>
-                                    <a class="dropdown-item" href="register_page">
-                                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Register
-                                    </a>
-                                </div>
-                            </li>
-                        {% else: %}
-                            <li class="nav-item dropdown no-arrow">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                   data-toggle="dropdown"
-                                   aria-haspopup="true" aria-expanded="false">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="login_page">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Login
+                            </a>
+                            <a class="dropdown-item" href="forgot_password_page">
+                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Forgot Password
+                            </a>
+                            <a class="dropdown-item" href="register_page">
+                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Register
+                            </a>
+                        </div>
+                    </li>
+                    {% else: %}
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"
                       style="font-weight: bold; font-size: 20px;">{{ loginId }}</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                     aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" href="mypage">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Mypage
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Logout
-                                    </a>
-                                </div>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-                <div>
-                    <div class="row justify-content-center">
-                        <div class="col-xl-10 col-lg-12 col-md-9">
-                            <div>
-                                <div >
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="mypage">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Mypage
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div>
+                <div class="row justify-content-center">
+                    <div class="col-xl-10 col-lg-12 col-md-9">
+                        <div>
+                            <div >
+                                <div>
                                     <div>
                                         <div>
-                                            <div>
-                                                <div class="text-center">
-                                                    <p class="mb-4"><br><br></p>
-                                                    <h1 class="h4 text-gray-900 mb-2">Are you curious EC number?</h1>
-                                                    <p class="mb-4"><br></p>
-                                                </div>
-                                                <form action="" method="post" class="user">
-                                                    <div class="form-group">
+                                            <div class="text-center">
+                                                <p class="mb-4"><br><br></p>
+                                                <h1 class="h4 text-gray-900 mb-2">Are you curious EC number?</h1>
+                                                <p class="mb-4"><br></p>
+                                            </div>
+                                            <form action="" method="post" class="user">
+                                                <div class="form-group">
                             <textarea style="text-transform: uppercase;"
                                       onKeyPress="javascript:return IsAlphaNumeric(event);" type="text"
                                       onkeyup="this.value=this.value.replace(/[\ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');this.value=this.value.replace(/\n/g, '');"
                                       class="form-control form-control-user" id="seqNumber" aria-describedby="seqHelp"
                                       placeholder="Enter sequence..." autocomplete="off"></textarea><br>
-                                                    </div>
-                                                    <button class="btn btn-secondary" type="button" onclick="showPlz()">
-                                                        Show Result
-                                                    </button>
-                                                </form>
-                                                <hr>
-                                            </div>
+                                                </div>
+                                                <button class="btn btn-secondary" type="button" onclick="showPlz()">
+                                                    Show Result
+                                                </button>
+                                            </form>
+                                            <hr>
                                         </div>
-                                        <div  style="padding: 20px;">
-                                            <div id="function_result" style="padding: 20px;">
-                                            </div>
+                                    </div>
+                                    <div  style="padding: 20px;">
+                                        <div id="function_result" style="padding: 20px;">
                                         </div>
                                     </div>
                                 </div>
@@ -201,39 +200,40 @@
                 </div>
             </div>
         </div>
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="/logout?url=/search_page">Logout</a>
-                    </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="/logout?url=/search_page">Logout</a>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script
-                src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/vendor/jquery/jquery.min.js') }}"></script>
-        <script
-                src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script
-                src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/js/sb-admin-2.min.js') }}"></script>
+    <script
+            src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/vendor/jquery/jquery.min.js') }}"></script>
+    <script
+            src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script
+            src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/js/sb-admin-2.min.js') }}"></script>
 
-        </div>
-        </body>
+</div>
+</body>
 
-        </html>
+</html>
 
-    {% endblock %}
+{% endblock %}
