@@ -9,7 +9,7 @@ import mysql_dao
 from flask import Flask, redirect, escape, render_template, request, session
 from flask_mail import Mail, Message
 from sklearn.metrics import precision_score, recall_score
-
+import time
 app = Flask(__name__)
 
 input_path = "./config.json"
@@ -236,6 +236,8 @@ def predict_deepec(input_seq, result):
 
 @app.route("/predict", methods=['GET', 'POST'])
 def predict_all():
+
+    start = time.time()  # 시작 시간 저장
     input_seq = ''
     if request.method == "POST":
         input_seq = request.form["seq"]
@@ -268,7 +270,7 @@ def predict_all():
     api_result['final_result'] = fun(api_result['DeepEC']['deepec_ec'], api_result['ECPred']['ecpred_ec'],
                                      api_result['DETECT']['detect_ec'], api_result['DeepEC']['deepec_acc'],
                                      api_result['ECPred']['ecpred_acc'], api_result['DETECT']['detect_acc'])
-
+    print("time :", time.time() - start)
     return api_result
 
 
