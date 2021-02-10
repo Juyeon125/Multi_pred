@@ -35,9 +35,6 @@ sys.path.append("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/DETECTv2/")
 sys.path.append("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/blast/bin/")
 sys.path.append("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/EMBOSS-6.6.0/nucleus/.libs/")
 
-ec_list = []
-acc_list = []
-
 # @app.route("/predict/algorithm", methods=['GET', 'POST'])
 def fun(ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
     ec_list = []
@@ -274,28 +271,6 @@ def predict_all():
 
     return api_result
 
-
-seq_list = []
-y_true = []
-y_pred = []
-temp_result = {}
-data = pd.read_csv(r"EC number database_Archaea1.csv")
-
-#seq 긁기
-for i in data.SEQ[:20]:
-    seq_list.append(i)
-
-#EC number 정답 긁기
-for i in data.EC[:20]:
-    y_true.append(i)
-
-for i in range(len(data.SEQ[:20])):
-    predict_deepec(seq_list[i], result=temp_result)
-    deepec_result = temp_result['DeepEC']['deepec_ec']
-    y_pred.append(deepec_result)
-
-print(recall_score(y_true, y_pred, average='micro'))
-print(precision_score(y_true, y_pred, average='micro'))
 
 @app.route('/')
 def index():
