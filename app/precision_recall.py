@@ -206,14 +206,14 @@ temp_result = {}
 data = pd.read_csv(r"EC number database_Archaea1.csv")
 
 #seq 긁기
-for i in data.SEQ[:20]:
+for i in data.SEQ[20:40]:
     seq_list.append(i)
 
 #EC number 정답 긁기
-for i in data.EC[:20]:
+for i in data.EC[20:40]:
     y_true.append(i)
 
-for i in range(len(data.SEQ[:20])):
+for i in range(len(data.SEQ[20:40])):
     predict_deepec(seq_list[i], result=temp_result)
     deepec_result = temp_result['DeepEC']['deepec_ec']
     deepec_pred.append(deepec_result)

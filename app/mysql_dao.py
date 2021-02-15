@@ -16,9 +16,9 @@ def connect_result(ec_num):
         object_list = []
         row = cursor.fetchall()
         for row_data in row:
-            #json_object = {"accepted_name": row_data[0], "reaction": row_data[1]}
             object_list.append(row_data[0])
             object_list.append(row_data[1])
+
         return object_list
     return "fail"
 
