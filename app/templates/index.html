@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}HOME{% endblock %}
+{% block mainContent %}
+    <div>
+        All EC is ~~~
+    </div>
+
+    <div class="mt-2">
+        <strong>Important note:</strong> This tool can predict up to 4000 sequences or a maximum file size 4 MB.
+    </div>
+
+    <form>
+
+        <!-- STEP 1 - Enter your input sequences -->
+        <div class="card mt-3">
+            <div class="card-header">
+                STEP 1 - Enter your input sequences
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label" for="sequence-text">sequences in any supported format:</label>
+                    <textarea id="sequence-text" class="form-control" rows="6" maxlength="4000"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Or, upload a file:</label>
+                    <input type="file" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2 - Set your parameter -->
+        <div class="card mt-3">
+            <div class="card-header">STEP 2 - Set your parameter</div>
+            <div class="card-body">
+                <div>
+                    <label class="form-label">Select Methods</label>
+                    <div>
+                        <label class="form-check form-check-inline cursor-pointer">
+                            <input class="form-check-input" type="checkbox" checked>
+                            <span class="form-check-label">DeepEC</span>
+                        </label>
+                        <label class="form-check form-check-inline cursor-pointer">
+                            <input class="form-check-input" type="checkbox" checked>
+                            <span class="form-check-label">DETECTv2</span>
+                        </label>
+                        <label class="form-check form-check-inline cursor-pointer">
+                            <input class="form-check-input" type="checkbox" checked>
+                            <span class="form-check-label">ECPred</span>
+                        </label>
+                        <label class="form-check form-check-inline cursor-pointer">
+                            <input class="form-check-input" type="checkbox" checked>
+                            <span class="form-check-label">eCAMI</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3 - Submit your job -->
+        <div class="card mt-3">
+            <div class="card-header">STEP 3 - Submit your job</div>
+            <div class="card-body">
+                <label class="form-check mb-2 cursor-pointer">
+                    <input class="form-check-input" type="checkbox">
+                    <span class="form-check-label">Be notified by email</span>
+                </label>
+                <button type="button" class="btn btn-primary mt-2">Submit</button>
+            </div>
+        </div>
+
+    </form>
+
+    <div class="mt-2">
+    If you use this service, please consider citing the following publication: 아끼고 귀여운 주연이 논문
+    </div>
+
+{% endblock %}

@@ -1,10 +1,8 @@
-import multiprocessing
 import os
 import subprocess
 from datetime import datetime
+
 import pandas as pd
-import mysql_dao
-from flask import Flask, redirect, escape, render_template, request, session, app
 from sklearn.metrics import precision_score, recall_score
 
 
@@ -41,7 +39,6 @@ def fun(ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
     for v in range(0, len(ec_list)):
         if (v == re_list.index(max(re_list))):
             final_ec = ec_list[v]
-
 
     final_result = {"final_ec": final_ec}
 
@@ -98,7 +95,8 @@ def predict_ecami(input_seq, result):
     ecami_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/eCAMI"
     ecami_execute_path = os.path.join(ecami_path, "prediction.py")
     ecami_kmer_db_path = os.path.join(ecami_path, "CAZyme")
-    ecami_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}_ecami_output.txt")
+    ecami_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
+                                     f"{timestamp}_ecami_output.txt")
 
     subprocess.run(["python3", ecami_execute_path,
                     "-input", ecami_input_path,
@@ -133,7 +131,8 @@ def predict_ecpred(input_seq, result):
 
     ecpred_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/ECPred/"
     ecpred_execute_path = os.path.join(ecpred_path, "ECPred.jar")
-    ecpred_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}_ecpred_output.tsv")
+    ecpred_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
+                                      f"{timestamp}_ecpred_output.tsv")
 
     subprocess.run(["java", "-jar", ecpred_execute_path,
                     "blast", ecpred_input_path,
@@ -165,7 +164,8 @@ def predict_deepec(input_seq, result):
 
     deepec_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/deepec"
     deepec_execute_path = os.path.join(deepec_path, "deepec.py")
-    deepec_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/", f"{timestamp}_deepec_output")
+    deepec_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
+                                      f"{timestamp}_deepec_output")
 
     subprocess.run(["python3", deepec_execute_path,
                     "-i", deepec_input_path,
@@ -205,11 +205,11 @@ temp_result = {}
 
 data = pd.read_csv(r"EC number database_Archaea1.csv")
 
-#seq 긁기
+# seq 긁기
 for i in data.SEQ[20:40]:
     seq_list.append(i)
 
-#EC number 정답 긁기
+# EC number 정답 긁기
 for i in data.EC[20:40]:
     y_true.append(i)
 
@@ -230,13 +230,11 @@ for i in range(len(data.SEQ[20:40])):
     ecami_result = temp_result['eCAMI']['ecami_ec']
     ecami_pred.append(ecami_result)
 
-
     algorithm_result = fun(temp_result['DeepEC']['deepec_ec'], temp_result['ECPred']['ecpred_ec'],
-                         temp_result['DETECT']['detect_ec'], temp_result['DeepEC']['deepec_acc'],
-                         temp_result['ECPred']['ecpred_acc'], temp_result['DETECT']['detect_acc'])
+                           temp_result['DETECT']['detect_ec'], temp_result['DeepEC']['deepec_acc'],
+                           temp_result['ECPred']['ecpred_acc'], temp_result['DETECT']['detect_acc'])
 
     algorithm_pred.append(algorithm_result["final_ec"])
-
 
 print(precision_score(y_true, deepec_pred, average='micro'), "DeepEC Precision")
 print(recall_score(y_true, deepec_pred, average='micro'), "DeepEC Recall")
