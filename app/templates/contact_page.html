@@ -1,35 +1,42 @@
 {% extends "base.html" %}
 {% block title %}Contact{% endblock %}
 {% block mainTitle %}Contact{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="/contact">Contact</a></li>
+{% endblock %}
 {% block mainContent %}
-    <section id="contact" class="four">
-        <div class="container">
-            <header>
-                <h2>What's the problem?</h2>
-            </header>
-            <p>Please feel free to inquire about any problems you may have while using All EC.<br>We are always ready to
-                solve problems :)</p>
-            <form method="post" action="/contact_page" id="email-form">
+    <section id="contact">
+        <div class="description">
+            <p>Please feel free to inquire about any problems you may have while using <strong>All EC</strong></p>
+            <p>We are always ready to solve problems :)</p>
+        </div>
+        <form class="card my-3">
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-6 col-12-mobile"><input type="text" name="name_sender" placeholder="Name" value=""/>
+                    <div class="col-12 mb-2">Please enter your information</div>
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <input id="user_name" name="user_name" type="text" class="form-control" autocomplete="off">
+                            <label for="user_name">Name</label>
+                        </div>
                     </div>
-                    <div class="col-6 col-12-mobile"><input type="text" name="email_sender" placeholder="Email"
-                                                            value=""/>
-                    </div>
-                    <div class="col-6 col-12-mobile" style="display:none"><input type="text" name="email_receiver"
-                                                                                 placeholder="Email"
-                                                                                 value="lms960908@naver.com" readonly/>
-                    </div>
-                    <div class="col-12">
-                        <textarea type="text" name="email_content" placeholder="Message" value=""></textarea>
-                    </div>
-                    <div class="col-12">
-                        <button class="btn btn-secondary" type="submit" data-dismiss="modal">Send
-                            Message
-                        </button>
+                    <div class="col-6">
+                        <div class="form-floating mb-3">
+                            <input id="user_email" name="user_email" type="email" class="form-control"
+                                   autocomplete="off">
+                            <label for="user_email">Email address</label>
+                        </div>
                     </div>
                 </div>
-            </form>
-        </div>
+                <div class="col-12 mb-3">
+                    <label class="form-label" for="mail_content">Please enter your opinion</label>
+                    <textarea id="mail_content" class="form-control" rows="10" maxlength="4000"></textarea>
+                </div>
+                <div class="col-12 text-end">
+                    <button type="button" class="btn btn-primary" disabled>Send Mail</button>
+                </div>
+            </div>
+        </form>
     </section>
 {% endblock %}

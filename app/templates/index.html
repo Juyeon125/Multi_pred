@@ -9,7 +9,7 @@
         <strong>Important note:</strong> This tool can predict up to 4000 sequences or a maximum file size 4 MB.
     </div>
 
-    <form>
+    <form id="predict_form">
 
         <!-- STEP 1 - Enter your input sequences -->
         <div class="card mt-3">
@@ -18,8 +18,9 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label class="form-label" for="sequence-text">sequences in any supported format:</label>
-                    <textarea id="sequence-text" class="form-control" rows="6" maxlength="4000"></textarea>
+                    <label class="form-label" for="sequence_text">sequences in any supported format:</label>
+                    <textarea id="sequence_text" name="sequence_text" class="form-control" rows="6"
+                              maxlength="4000"></textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Or, upload a file:</label>
@@ -36,19 +37,19 @@
                     <label class="form-label">Select Methods</label>
                     <div>
                         <label class="form-check form-check-inline cursor-pointer">
-                            <input class="form-check-input" type="checkbox" checked>
+                            <input class="form-check-input" type="checkbox" name="methods" value="DeepEC" checked>
                             <span class="form-check-label">DeepEC</span>
                         </label>
                         <label class="form-check form-check-inline cursor-pointer">
-                            <input class="form-check-input" type="checkbox" checked>
+                            <input class="form-check-input" type="checkbox" name="methods" value="DETECTv2" checked>
                             <span class="form-check-label">DETECTv2</span>
                         </label>
                         <label class="form-check form-check-inline cursor-pointer">
-                            <input class="form-check-input" type="checkbox" checked>
+                            <input class="form-check-input" type="checkbox" name="methods" value="ECPred" checked>
                             <span class="form-check-label">ECPred</span>
                         </label>
                         <label class="form-check form-check-inline cursor-pointer">
-                            <input class="form-check-input" type="checkbox" checked>
+                            <input class="form-check-input" type="checkbox" name="methods" value="eCAMI" checked>
                             <span class="form-check-label">eCAMI</span>
                         </label>
                     </div>
@@ -61,17 +62,78 @@
             <div class="card-header">STEP 3 - Submit your job</div>
             <div class="card-body">
                 <label class="form-check mb-2 cursor-pointer">
-                    <input class="form-check-input" type="checkbox">
+                    <input class="form-check-input" type="checkbox" name="is_notified" value="true">
                     <span class="form-check-label">Be notified by email</span>
                 </label>
-                <button type="button" class="btn btn-primary mt-2">Submit</button>
+                <button id="btn_submit" type="button" class="btn btn-primary mt-2" disabled>Submit</button>
             </div>
         </div>
 
     </form>
 
     <div class="mt-2">
-    If you use this service, please consider citing the following publication: 아끼고 귀여운 주연이 논문
+        If you use this service, please consider citing the following publication: 아끼고 귀여운 주연이 논문
     </div>
+{% endblock %}
 
+{% block mainScript %}
+    <script>
+        const sequenceTextarea = $("#sequence_text");
+        const submitButton = $("#btn_submit");
+        const methods = $("input[name=methods]");
+
+        function checkSubmitButton() {
+            if (submitButton.hasClass("btn-loading")) return;
+
+            let enable = true;
+
+            // sequence check
+            enable &&= sequenceTextarea.val().length > 0;
+
+            // methods check
+            let methodsEnable = false;
+            for (let i = 0; i < methods.length; i++) {
+                methodsEnable ||= $(methods[i]).prop("checked");
+            }
+            enable &&= methodsEnable;
+
+            submitButton.prop("disabled", !enable);
+        }
+
+        methods.change(function () {
+            checkSubmitButton();
+        });
+        sequenceTextarea.keyup(function () {
+            checkSubmitButton();
+        });
+        submitButton.click(function () {
+            if (submitButton.prop("disabled")) return;
+
+            let data = $("#predict_form").serializeObject();
+            data['methods'] = [];
+
+            methods.each(function () {
+                const method = $(this);
+                if (method.is(":checked")) data['methods'] = data['methods'].concat(method.prop('value'));
+            });
+
+            submitButton.addClass("btn-loading").prop("disabled", true);
+
+            $.ajax({
+                url: "~~~~~",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (res) {
+
+                },
+                error: function (err) {
+                    submitButton.removeClass("btn-loading").prop("disabled", false);
+                    alert(err);
+                    checkSubmitButton();
+                }
+            });
+        });
+    </script>
 {% endblock %}

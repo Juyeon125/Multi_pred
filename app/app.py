@@ -13,16 +13,16 @@ from config import Configuration
 
 app = Flask(__name__)
 
-config = Configuration()
-config.load_file("./config.json")
+# config = Configuration()
+# config.load_file("./config.json")
 
-app.config['MAIL_SERVER'] = config.mail['host']
-app.config['MAIL_PORT'] = config.mail['port']
-app.config['MAIL_USERNAME'] = config.mail['user']
-app.config['MAIL_PASSWORD'] = config.mail['password']
-app.config['MAIL_USE_SSL'] = config.mail['use_ssl']
-app.config['MAIL_USE_TLS'] = config.mail['use_tls']
-mail = Mail(app)
+# app.config['MAIL_SERVER'] = config.mail['host']
+# app.config['MAIL_PORT'] = config.mail['port']
+# app.config['MAIL_USERNAME'] = config.mail['user']
+# app.config['MAIL_PASSWORD'] = config.mail['password']
+# app.config['MAIL_USE_SSL'] = config.mail['use_ssl']
+# app.config['MAIL_USE_TLS'] = config.mail['use_tls']
+# mail = Mail(app)
 
 sys.path.append("/usr/bin/")
 sys.path.append("/usr/local/bin/")
@@ -97,26 +97,26 @@ def search_page():
         return redirect('/search_page')
 
 
-@app.route('/intro_page')
-def intro_page():
+@app.route('/introduction')
+def introduction():
     if 'username' in session:
         result = '%s' % escape(session['username'])
-        return render_template('intro_page.html', loginId=result)
+        return render_template('introduction.html', loginId=result)
     else:
         session['username'] = ''
         result = '%s' % escape(session['username'])
-        return redirect('/intro_page')
+        return redirect('/introduction')
 
 
-@app.route('/developer_page')
-def developer_page():
+@app.route('/about_us')
+def about_us():
     if 'username' in session:
         result = '%s' % escape(session['username'])
-        return render_template('developer_page.html', loginId=result)
+        return render_template('about_us.html', loginId=result)
     else:
         session['username'] = ''
         result = '%s' % escape(session['username'])
-    return redirect('/developer_page')
+    return redirect('/about_us')
 
 
 @app.route('/contact_page')

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}About US{% endblock %}
+{% block mainTitle %}About US{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="/about_us">About US</a></li>
+{% endblock %}
+{% block mainContent %}
+    <section id="about_us" class="card my-3">
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-12 col-md-6">
+                    <article>
+                        <div class="image round">
+                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
+                        </div>
+                        <header>
+                            <h3>Juyeon Park</h3>
+                        </header>
+                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
+                            2017243063</p>
+                    </article>
+                </div>
+                <div class="col-12 col-md-6 mt-3 mt-md-0">
+                    <article>
+                        <div class="image round">
+                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
+                        </div>
+                        <header>
+                            <h3>Juyeon Park</h3>
+                        </header>
+                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
+                            2017243063</p>
+                    </article>
+                </div>
+                <div class="col-12 col-md-6 mt-3">
+                    <article>
+                        <div class="image round">
+                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
+                        </div>
+                        <header>
+                            <h3>Juyeon Park</h3>
+                        </header>
+                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
+                            2017243063</p>
+                    </article>
+                </div>
+                <div class="col-12 col-md-6 mt-3">
+                    <article>
+                        <div class="image round">
+                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
+                        </div>
+                        <header>
+                            <h3>Juyeon Park</h3>
+                        </header>
+                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
+                            2017243063</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

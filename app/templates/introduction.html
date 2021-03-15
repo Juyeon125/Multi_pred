@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Introduction{% endblock %}
+{% block mainTitle %}Introduction{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="/introduction">Introduction</a></li>
+{% endblock %}
+{% block mainContent %}
+    <section id="about_us" class="card my-3">
+        <div class="card-body">
+            <!-- Content Row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-4 py-3 border-left-primary">
+                        <div class="card-body">
+                            <p style="font-weight: bold;">EC number</p>
+                            An abbreviation of enzyme code number. Method for
+                            systematic classification of enzymes. It consists of
+                            four pairs of numbers starting with EC. In 1961, the
+                            Enzyme Commission of the International Federation of
+                            Biochemistry established rules for the name and
+                            classification of enzymes, while issuing enzyme tables
+                            that systematically classify 707 enzymes, which were
+                            then known, and then assigned enzyme numbers to each
+                            enzyme. Some modifications have since been made to the
+                            rules to counter the development of biochemistry and the
+                            discovery of new enzymes. In the 1984 enzyme table, about
+                            2,500 enzymes are classified as enzyme numbers.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card mb-4 py-3 border-left-success">
+                        <div class="card-body">
+                            <p style="font-weight: bold;">Utilize EC number</p>
+                            Half a century ago, a large amount of new enzymes were
+                            discovered, and researchers in the pure bioscience, pathology
+                            and biochemical industries felt that rules for enzyme names
+                            were needed to take advantage of them, and enzyme naming
+                            conventions such as EC codes were developed to address them.
+                            The International Union of Biochemistry and Molecular Biology
+                            specifies an enzyme number that indicates the function of the
+                            enzyme. This could solve problems arising from ambiguous and
+                            unclear enzyme names in the field of enzyme utilization or
+                            publications dealing with enzyme research.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card py-3 border-left-info">
+                        <div class="card-body">
+                            <p style="font-weight: bold;">Necessity of EC number prediction</p>
+                            The enzyme number, which shows what kind of biochemical reaction
+                            enzymes intersect, is widely used in various fields. Currently,
+                            more than 10 computer methodologies have been developed to predict
+                            EC numbers, and DeepEC is showing outstanding performance in terms
+                            of predictive speed, accuracy, and predictable range. However, it
+                            is not easy for researchers who need enzyme numbers to use DeepEC.
+                            This is because DeepEC requires installation and use in a Linux
+                            environment, but not many researchers can handle Linux. That's why
+                            many researchers now use the amino acid sequence to sort out similar
+                            protein sequences in the Swiss-Prot (protein Sequence Database) and
+                            to find and guess the enzyme number among the information for each
+                            sequence. This method has the disadvantage of being cumbersome
+                            because it takes a long time to require many protein sequence
+                            enzyme numbers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -13,3 +13,20 @@ body {
     background-color: #FFF44A;
     margin-bottom: 1.5rem;
 }
+
+a {
+    color: #723500;
+}
+
+.btn.btn-primary, .form-check-input:checked {
+    background-color: #723500;
+}
+
+.form-control:focus, .form-check-input:focus {
+    border-color: #a37852;
+    box-shadow: 0 0 0 .25rem rgba(163, 120, 82, .25);
+}
+
+.navbar-dark {
+    background: #4e2b01;
+}
