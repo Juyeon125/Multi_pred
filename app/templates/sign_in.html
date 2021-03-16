@@ -34,15 +34,13 @@
 {% block mainScript %}
     <script>
         const signInButton = $("#btn_sign_in");
-        const emailInput = $("input[name=email]");
-        const passwordInput = $("input[name=password]");
 
         function checkSignInButton() {
             if (signInButton.hasClass("btn-loading")) return;
 
             let enable = true;
 
-            enable = enable && emailInput.val().length > 0 && passwordInput.val().length > 0;
+            enable = enable && $("input[name=email]").val().length > 0 && $("input[name=password]").val().length > 0;
             signInButton.prop("disabled", !enable);
         }
 
