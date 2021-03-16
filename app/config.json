@@ -1,10 +1,16 @@
 {
-    "usernameConfig": "###",
-    "passwordConfig": "###",
-    "mailServer":"smtp.gmail.com",
-    "mailPort": "465",
-    "dbHost":"127.0.0.1",
-    "dbUser":"root",
-    "dbPassword":"juyeon",
-    "db":"multi_pred"
+  "mail": {
+    "host": "sample.mail.host",
+    "port": 465,
+    "user": "sample",
+    "password": "sample",
+    "use_ssl": true,
+    "use_tls": false
+  },
+  "mysql": {
+    "host": "127.0.0.1",
+    "user": "allec",
+    "password": "allec",
+    "database": "allec"
+  }
 }

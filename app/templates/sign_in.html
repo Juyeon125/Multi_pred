@@ -7,26 +7,84 @@
 {% endblock %}
 {% block mainContent %}
     <div class="container-tight py-6">
-        <form class="card card-md">
+        <form class="card card-md" id="account_form">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Sign in to your account</h2>
                 <div class="form-group mb-3 ">
                     <label class="form-label">Email address</label>
                     <div>
-                        <input type="email" class="form-control" placeholder="Enter email">
+                        <input type="email" class="form-control" name="email" placeholder="Enter email">
                     </div>
                 </div>
                 <div class="form-group mb-3 ">
                     <label class="form-label">Password</label>
                     <div>
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
                     </div>
                 </div>
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                    <button type="button" id="btn_sign_in" class="btn btn-primary w-100" disabled>Sign In</button>
                 </div>
             </div>
         </form>
         <div class="mt-3 text-center">Don't have account yet? <a href="/sign_up">Sign up</a></div>
     </div>
+{% endblock %}
+
+{% block mainScript %}
+    <script>
+        const signInButton = $("#btn_sign_in");
+        const emailInput = $("input[name=email]");
+        const passwordInput = $("input[name=password]");
+
+        function checkSignInButton() {
+            if (signInButton.hasClass("btn-loading")) return;
+
+            let enable = true;
+
+            enable = enable && emailInput.val().length > 0 && passwordInput.val().length > 0;
+            signInButton.prop("disabled", !enable);
+        }
+
+        emailInput.keyup(function (e) {
+            if (e.keyCode === 13) {
+                signInButton.click();
+            } else {
+                checkSignInButton();
+            }
+        });
+
+        passwordInput.keyup(function (e) {
+            if (e.keyCode === 13) {
+                signInButton.click();
+            } else {
+                checkSignInButton();
+            }
+        });
+
+        signInButton.click(function () {
+            if (signInButton.prop("disabled")) return;
+            let data = $("#account_form").serializeObject();
+
+            signInButton.addClass("btn-loading").prop("disabled", true)
+
+            $.ajax({
+                url: "/sign_in",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (res) {
+                    location.href = "/"
+                },
+                error: function (err) {
+                    alert(err.responseJSON.message);
+                    signInButton.removeClass("btn-loading").prop("disabled", false);
+                    checkSignInButton();
+                }
+            });
+        });
+
+    </script>
+
 {% endblock %}

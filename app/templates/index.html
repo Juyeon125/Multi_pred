@@ -103,9 +103,11 @@
         methods.change(function () {
             checkSubmitButton();
         });
+
         sequenceTextarea.keyup(function () {
             checkSubmitButton();
         });
+
         submitButton.click(function () {
             if (submitButton.prop("disabled")) return;
 

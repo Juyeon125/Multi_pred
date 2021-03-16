@@ -1,6 +1,4 @@
-import pymysql
 import connection
-import json
 
 
 def connect_result(ec_num):
@@ -23,8 +21,6 @@ def connect_result(ec_num):
     return "fail"
 
 
-
-
 def get_dbSelect_login(email, pw):
     conn = connection.connection()
     try:
@@ -36,7 +32,7 @@ def get_dbSelect_login(email, pw):
         cursor.close()
     if row_num > 0:
         row = cursor.fetchall()
-        for row_data in row :
+        for row_data in row:
             json_object = {
                 "email": row_data[0]
             }
@@ -55,7 +51,7 @@ def get_dbSelect_password(email, last):
         cursor.close()
     if row_num > 0:
         row = cursor.fetchall()
-        for row_data in row :
+        for row_data in row:
             result = row_data[0]
         return result
     return "fail"
@@ -96,7 +92,7 @@ def get_dbInsert_register(email, pw, first, last):
             cursor = conn.cursor()
             sql = "INSERT INTO member (email, pw, first, last) VALUES (%s, %s, %s, %s);"
             val = (email, pw, first, last)
-            cursor.execute(sql,val)
+            cursor.execute(sql, val)
             conn.commit()
         finally:
             cursor.close()
@@ -117,7 +113,8 @@ def get_saveInfo_Select(mail):
         row = cursor.fetchall()
         object_list.append(row_num)
         for row_data in row:
-            json_object = {"his_num":row_data[0],"seq":row_data[1],"ec_num": row_data[2], "accepted_name": row_data[3], "reaction": row_data[4], "acc": row_data[5]}
+            json_object = {"his_num": row_data[0], "seq": row_data[1], "ec_num": row_data[2],
+                           "accepted_name": row_data[3], "reaction": row_data[4], "acc": row_data[5]}
             object_list.append(json_object)
         return object_list
     else:
@@ -144,7 +141,7 @@ def get_dbInsert_history_1(mail, seq, ec_num, acc):
         cursor = conn.cursor()
         sql = "INSERT INTO search (mail, seq, ec_num, accepted_name, reaction, acc) VALUES (%s, %s, %s, %s, %s, %s);"
         val = (mail, seq, ec_num, accepted_name, reaction, acc)
-        cursor.execute(sql,val)
+        cursor.execute(sql, val)
         conn.commit()
         cursor.close()
         return "true"

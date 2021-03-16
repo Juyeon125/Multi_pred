@@ -1,3 +1,4 @@
+import json
 import multiprocessing
 import os
 import subprocess
@@ -6,23 +7,18 @@ import time
 from datetime import datetime
 
 from flask import Flask, redirect, escape, render_template, request, session
-from flask_mail import Mail, Message
+from flask_mail import Message
 
 import mysql_dao
 from config import Configuration
+from connection import Database
 
 app = Flask(__name__)
 
-# config = Configuration()
-# config.load_file("./config.json")
+config = Configuration()
+config.load_file("./config.json")
 
-# app.config['MAIL_SERVER'] = config.mail['host']
-# app.config['MAIL_PORT'] = config.mail['port']
-# app.config['MAIL_USERNAME'] = config.mail['user']
-# app.config['MAIL_PASSWORD'] = config.mail['password']
-# app.config['MAIL_USE_SSL'] = config.mail['use_ssl']
-# app.config['MAIL_USE_TLS'] = config.mail['use_tls']
-# mail = Mail(app)
+database = Database(config.mysql['host'], config.mysql['user'], config.mysql['password'], config.mysql['database'])
 
 sys.path.append("/usr/bin/")
 sys.path.append("/usr/local/bin/")
@@ -135,9 +131,25 @@ def sign_up():
     return render_template('sign_up.html')
 
 
-@app.route('/sign_in')
+@app.route('/sign_in', methods=['GET'])
 def sign_in():
     return render_template('sign_in.html')
+
+
+@app.route("/sign_in", methods=['POST'])
+def sign_in_async():
+    form_data = request.data.decode('utf-8')
+    form_data = json.loads(form_data)
+
+    user = database.find_by_user_email(form_data['email'])
+
+    if user is None:
+        return '{"result":false, "message":"Not found user"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
+
+    if user['password'] != form_data['password']:
+        return '{"result":false, "message":"password_error"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
+
+    return '{"result":true}', 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 @app.route('/mypage')
@@ -237,7 +249,6 @@ def email_test():
 def send_email(senders, receiver, content):
     msg = Message('SAMPLE 문의 메일', sender=senders, recipients=receiver)
     msg.body = content
-    mail.send(msg)
 
     return 'success'
 
