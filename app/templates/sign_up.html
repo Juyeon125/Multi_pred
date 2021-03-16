@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block mainTitle %}Sign Up{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="/sign_up">Sign Up</a></li>
+{% endblock %}
+{% block mainContent %}
+<div class="card align-items-md-center">
+    <div class="card-header">
+        <h3 class="card-title">Sign Up</h3>
+    </div>
+    <div class="card-body">
+        <form>
+            <div class="form-group mb-3 ">
+                <label class="form-label">Email address</label>
+                <div>
+                    <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+            </div>
+            <div class="form-group mb-3 ">
+                <label class="form-label">Password</label>
+                <div>
+                    <input type="password" class="form-control" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

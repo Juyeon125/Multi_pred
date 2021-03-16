@@ -30,3 +30,8 @@ a {
 .navbar-dark {
     background: #4e2b01;
 }
+
+.center_div{
+    margin: 0 auto;
+    width:80%
+}

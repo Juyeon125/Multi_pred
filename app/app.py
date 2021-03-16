@@ -130,14 +130,14 @@ def contact_page():
     return redirect('/contact_page')
 
 
-@app.route('/register_page')
-def register_page():
-    return render_template('register_page.html')
+@app.route('/sign_up')
+def sign_up():
+    return render_template('sign_up.html')
 
 
-@app.route('/login_page')
-def login_page():
-    return render_template('login_page.html')
+@app.route('/sign_in')
+def sign_in():
+    return render_template('sign_in.html')
 
 
 @app.route('/mypage')
@@ -152,9 +152,9 @@ def mypage():
     return redirect('/')
 
 
-@app.route('/forgot_password_page')
-def forgot_password_page():
-    return render_template('forgot_password_page.html')
+@app.route('/find_account')
+def find_account():
+    return render_template('find_account.html')
 
 
 @app.route('/ecFunction_page')
