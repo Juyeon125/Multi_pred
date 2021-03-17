@@ -51,7 +51,7 @@
         const passwordInput = $("input[name=password]");
         const checkPasswordInput = $("input[name=check_password]");
 
-        function checkSignUpButton(){
+        function checkSignUpButton() {
             if (signUpButton.hasClass("btn-loading")) return;
 
             let enable = true;
@@ -99,7 +99,7 @@
         signUpButton.click(function () {
             if (signUpButton.prop("disabled")) return;
 
-            if (passwordInput.val() != checkPasswordInput.val()) {
+            if (passwordInput.val() !== checkPasswordInput.val()) {
                 alert("Check password");
                 return;
             }
@@ -115,11 +115,11 @@
                 data: JSON.stringify(data),
                 dataType: "json",
                 success: function (res) {
-                    location.href = "sign_in.html"
+                    location.href = "/"
                 },
                 error: function (err) {
                     alert(err.responseJSON.message);
-                    signInButton.removeClass("btn-loading").prop("disabled", false);
+                    signUpButton.removeClass("btn-loading").prop("disabled", false);
                     checkSignUpButton();
                 }
             });

@@ -126,9 +126,24 @@ def contact_page():
     return redirect('/contact_page')
 
 
-@app.route('/sign_up')
+@app.route('/sign_up', methods=['GET'])
 def sign_up():
     return render_template('sign_up.html')
+
+
+@app.route('/sign_up', methods=['POST'])
+def sign_up_async():
+    form_data = request.data.decode('utf-8')
+    form_data = json.loads(form_data)
+
+    result = database.sign_up_user(form_data['name'], form_data['email'], form_data['password'])
+    if type(result) is not dict:
+        return '{"result":false, "message":"' + result + '"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
+
+    user = result
+    # TODO 세션에 로그인 정보를 저장
+
+    return '{"result":true}', 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 @app.route('/sign_in', methods=['GET'])
