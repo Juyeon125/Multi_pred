@@ -7,7 +7,7 @@
 {% endblock %}
 {% block mainContent %}
     <div class="container-tight py-6">
-        <form class="card card-md" id="">
+        <form class="card card-md" id="sign_up_form">
             <div class="card-body">
                 <h2 class="card-title text-center md-4">Sign Up for your account</h2>
                 <div class="form-group mb-3 ">
@@ -45,10 +45,84 @@
 
 {% block mainScript %}
     <script>
-        const signUpButton = $("#btn_sign_up")
+        const signUpButton = $("#btn_sign_up");
+        const nameInput = $("input[name=name]");
+        const emailInput = $("input[name=email]");
+        const passwordInput = $("input[name=password]");
+        const checkPasswordInput = $("input[name=check_password]");
 
-        function checkSignInButton(){
+        function checkSignUpButton(){
+            if (signUpButton.hasClass("btn-loading")) return;
 
+            let enable = true;
+
+            enable = enable && nameInput.val().length > 0
+                && emailInput.val().length > 0
+                && passwordInput.val().length > 0
+                && checkPasswordInput.val().length > 0;
+
+            signUpButton.prop("disabled", !enable);
         }
+
+        nameInput.keyup(function (e) {
+            if (e.keyCode === 13) {
+                signUpButton.click();
+            } else {
+                checkSignUpButton();
+            }
+        });
+
+        emailInput.keyup(function (e) {
+            if (e.keyCode === 13) {
+                signUpButton.click();
+            } else {
+                checkSignUpButton();
+            }
+        });
+
+        passwordInput.keyup(function (e) {
+            if (e.keyCode === 13) {
+                signUpButton.click();
+            } else {
+                checkSignUpButton();
+            }
+        });
+
+        checkPasswordInput.keyup(function (e) {
+            if (e.keyCode === 13) {
+                signUpButton.click();
+            } else {
+                checkSignUpButton();
+            }
+        });
+
+        signUpButton.click(function () {
+            if (signUpButton.prop("disabled")) return;
+
+            if (passwordInput.val() != checkPasswordInput.val()) {
+                alert("Check password");
+                return;
+            }
+
+            let data = $("#sign_up_form").serializeObject();
+
+            signUpButton.addClass("btn-loading").prop("disabled", true);
+
+            $.ajax({
+                url: "/sign_up",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (res) {
+                    location.href = "sign_in.html"
+                },
+                error: function (err) {
+                    alert(err.responseJSON.message);
+                    signInButton.removeClass("btn-loading").prop("disabled", false);
+                    checkSignUpButton();
+                }
+            });
+        });
     </script>
 {% endblock %}

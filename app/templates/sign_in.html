@@ -7,7 +7,7 @@
 {% endblock %}
 {% block mainContent %}
     <div class="container-tight py-6">
-        <form class="card card-md" id="account_form">
+        <form class="card card-md" id="sign_in_form">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Sign in to your account</h2>
                 <div class="form-group mb-3 ">
@@ -34,13 +34,15 @@
 {% block mainScript %}
     <script>
         const signInButton = $("#btn_sign_in");
+        const emailInput = $("input[name=email]");
+        const passwordInput = $("input[name=password]");
 
         function checkSignInButton() {
             if (signInButton.hasClass("btn-loading")) return;
 
             let enable = true;
 
-            enable = enable && $("input[name=email]").val().length > 0 && $("input[name=password]").val().length > 0;
+            enable = enable && emailInput.val().length > 0 && passwordInput.val().length > 0;
             signInButton.prop("disabled", !enable);
         }
 
@@ -62,7 +64,7 @@
 
         signInButton.click(function () {
             if (signInButton.prop("disabled")) return;
-            let data = $("#account_form").serializeObject();
+            let data = $("#sign_in_form").serializeObject();
 
             signInButton.addClass("btn-loading").prop("disabled", true)
 
