@@ -1,5 +1,6 @@
 /venv/
-/vendor/
+/venv_wsl/
+/app/vendor/
+/app/requests/
 /.idea/
-
 pyvenv.cfg

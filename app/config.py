@@ -13,12 +13,15 @@ class Configuration:
             "use_ssl": True,
             "use_tls": False
         }
+
         self.mysql = {
             "host": "127.0.0.1",
             "user": "root",
             "password": "root",
             "database": "allec"
         }
+
+        self.path = dict()
 
     def load_file(self, file_path):
         if not os.path.exists(file_path):

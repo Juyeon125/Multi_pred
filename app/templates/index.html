@@ -22,15 +22,25 @@
                     <textarea id="sequence_text" name="sequence_text" class="form-control" rows="6"
                               maxlength="4000"></textarea>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Or, upload a file:</label>
-                    <input type="file" class="form-control">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div>
+                            <label class="form-label d-inline">Or, upload a file:</label>
+                            <input type="file" class="form-control d-inline w-auto">
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3 mt-md-0 col-md-6 text-start text-md-end">
+                        <div class="btn-group" role="group">
+                            <button id="example_sequence" type="button" class="btn btn-light">Example Sequence</button>
+                            <button id="clear_sequence" type="button" class="btn btn-light">Clear Sequence</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- STEP 2 - Set your parameter -->
-        <div class="card mt-3">
+        <div class="card mt-3 d-none">
             <div class="card-header">STEP 2 - Set your parameter</div>
             <div class="card-body">
                 <div>
@@ -57,9 +67,9 @@
             </div>
         </div>
 
-        <!-- STEP 3 - Submit your job -->
+        <!-- STEP 2 - Submit your job -->
         <div class="card mt-3">
-            <div class="card-header">STEP 3 - Submit your job</div>
+            <div class="card-header">STEP 2 - Submit your job</div>
             <div class="card-body">
                 <label class="form-check mb-2 cursor-pointer">
                     <input class="form-check-input" type="checkbox" name="is_notified" value="true">
@@ -72,7 +82,8 @@
     </form>
 
     <div class="mt-2 mb-3">
-        If you use this service, please consider citing the following publication -> All EC: A framework for it easy to identifying ec number from amino acid sequence
+        If you use this service, please consider citing the following publication -> All EC: A framework for it easy to
+        identifying ec number from amino acid sequence
     </div>
 {% endblock %}
 
@@ -81,6 +92,9 @@
         const sequenceTextarea = $("#sequence_text");
         const submitButton = $("#btn_submit");
         const methods = $("input[name=methods]");
+
+        const exampleSequenceButton = $("#example_sequence");
+        const clearSequenceButton = $("#clear_sequence");
 
         function checkSubmitButton() {
             if (submitButton.hasClass("btn-loading")) return;
@@ -108,6 +122,19 @@
             checkSubmitButton();
         });
 
+        clearSequenceButton.click(function () {
+            sequenceTextarea.val("");
+            checkSubmitButton();
+        });
+
+        exampleSequenceButton.click(function () {
+            clearSequenceButton.click();
+            sequenceTextarea.val(sequenceTextarea.val() + ">sp|B8DQX7|HIS5_DESVM Imidazole glycerol phosphate synthase subunit HisH OS=Desulfovibrio vulgaris (strain Miyazaki F / DSM 19637) OX=883 GN=hisH PE=3 SV=1\nMLAILDYKAGNQTSVRRALDHLGIPCVITADPAVIAGAHGVIFPGVGAAGQAMNELLTTG\nLDKVLKDQVQAGKPLLGICVGCQIMLDYSQENDTKALGIVPGECRLFNAAWTEEDGTPIR\nVPHMGWNSIVQKRPCELLKGIEPEAEFYFVHSYYPAPPESYVIATCTYGEEFCAIHGGPG\nLWAVQFHPEKSGRPGLALLRNFYAYCKEASRA\n");
+            sequenceTextarea.val(sequenceTextarea.val() + ">sp|Q9JHW2|NIT2_MOUSE Omega-amidase NIT2 OS=Mus musculus OX=10090 GN=Nit2 PE=1 SV=1\nMSTFRLALIQLQVSSIKSDNLTRACSLVREAAKQGANIVSLPECFNSPYGTTYFPDYAEK\nIPGESTQKLSEVAKESSIYLIGGSIPEEDAGKLYNTCSVFGPDGSLLVKHRKIHLFDIDV\nPGKITFQESKTLSPGDSFSTFDTPYCKVGLGICYDMRFAELAQIYAQRGCQLLVYPGAFN\nLTTGPAHWELLQRARAVDNQVYVATASPARDDKASYVAWGHSTVVDPWGQVLTKAGTEET\nILYSDIDLKKLAEIRQQIPILKQKRADLYTVESKKP\n");
+            sequenceTextarea.val(sequenceTextarea.val() + ">sp|A8L1A5|MSHB_FRASN 1D-myo-inositol 2-acetamido-2-deoxy-alpha-D-glucopyranoside deacetylase OS=Frankia sp. (strain EAN1pec) OX=298653 GN=mshB PE=3 SV=1\nMTQSAETVLPPRRVLFVHAHPDDEVISTGVTMASYAARPDTHVTLVTCTLGEVGEVLVPE\nLINLRSDLGDQLGGYRIGELDRSCAELGVTDHRFLGGAGRWRDSGMIDTPANDDPRCLWR\nADLDEASAALVQVVREVRPQVLVTYDENGAYGHPDHIRAHDVSVRAFADAANPDFAPEAG\nQPWQISKFYETATPKSFVQAGIEYFRESGGESPFGPAESADDIPLAVPDELITTEIQADE\nYLPAKVAAMRAHRTQMAVDGFFFALADGIGKRAWAAEHFVLTRGERGPGTEPGAHETDLF\nAGLPL\n");
+            checkSubmitButton();
+        })
+
         submitButton.click(function () {
             if (submitButton.prop("disabled")) return;
 
@@ -122,7 +149,7 @@
             submitButton.addClass("btn-loading").prop("disabled", true);
 
             $.ajax({
-                url: "~~~~~",
+                url: "/predict",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
@@ -132,7 +159,7 @@
                 },
                 error: function (err) {
                     submitButton.removeClass("btn-loading").prop("disabled", false);
-                    alert(err);
+                    alert(err.responseJSON.message);
                     checkSubmitButton();
                 }
             });
