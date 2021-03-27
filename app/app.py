@@ -7,16 +7,15 @@ import sys
 import time
 from datetime import datetime
 
-import git
+import requests
 from Bio import SeqIO
 from flask import Flask, redirect, escape, render_template, request, session
 from flask_mail import Message
 from tqdm import tqdm
 
 import mysql_dao
-import requests
 from config import Configuration
-from connection import Database
+from database import Database
 
 app = Flask(__name__)
 
@@ -169,10 +168,10 @@ def predict_deepec(output_path, req_seq_file_path, result):
     deepec_output_path = os.path.join(output_path, "deepec")
     os.makedirs(deepec_output_path)
 
-    subprocess.run([f"{get_deepec_path()}/venv/bin/{'python' if platform.system() == 'Linux' else 'python.exe'}",
-                    deepec_execute_path,
-                    "-i", req_seq_file_path,
-                    "-o", deepec_output_path], shell=True)
+    subprocess.call(f"{get_deepec_path()}/venv/bin/{'python' if platform.system() == 'Linux' else 'python.exe'} "
+                    f"{deepec_execute_path} "
+                    f"-i {req_seq_file_path} "
+                    f"-o {deepec_output_path}", shell=True)
 
     deepec_output_path = os.path.join(deepec_output_path, "log_files", "4digit_EC_prediction.txt")
 
@@ -316,20 +315,6 @@ def predict_ecpred(input_seq, result):
     result.update({'ECPred': ecpred_result_json})
 
 
-@app.route('/', methods=['GET'])
-def home():
-    # Session Check for exist user session info
-    # if 'username' in session:
-    #     result = '%s' % escape(session['username'])
-    #     return render_template('mainFrame.html', loginId=result)
-    # else:
-    #     session['username'] = ''
-    #     result = '%s' % escape(session['username'])
-    #     return redirect('/')
-
-    return render_template('index.html')
-
-
 @app.route("/predict", methods=['POST'])
 def predict_all():
     form_data = request.data.decode('utf-8')
@@ -404,17 +389,6 @@ def search_page():
         return redirect('/search_page')
 
 
-@app.route('/introduction')
-def introduction():
-    if 'username' in session:
-        result = '%s' % escape(session['username'])
-        return render_template('introduction.html', loginId=result)
-    else:
-        session['username'] = ''
-        result = '%s' % escape(session['username'])
-        return redirect('/introduction')
-
-
 @app.route('/about_us')
 def about_us():
     if 'username' in session:
@@ -426,56 +400,10 @@ def about_us():
     return redirect('/about_us')
 
 
-@app.route('/contact_page')
-def contact_page():
-    if 'username' in session:
-        result = '%s' % escape(session['username'])
-        return render_template('contact_page.html', loginId=result)
-    else:
-        session['username'] = ''
-        result = '%s' % escape(session['username'])
-    return redirect('/contact_page')
 
 
-@app.route('/sign_in', methods=['GET'])
-def sign_in():
-    return render_template('sign_in.html')
 
 
-@app.route("/sign_in", methods=['POST'])
-def sign_in_async():
-    form_data = request.data.decode('utf-8')
-    form_data = json.loads(form_data)
-
-    user = database.find_by_user_email(form_data['email'])
-
-    if user is None:
-        return '{"result":false, "message":"Not found user"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
-
-    if user['password'] != form_data['password']:
-        return '{"result":false, "message":"password_error"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
-
-    return '{"result":true}', 200, {'Content-Type': 'application/json; charset=utf-8'}
-
-
-@app.route('/sign_up', methods=['GET'])
-def sign_up():
-    return render_template('sign_up.html')
-
-
-@app.route('/sign_up', methods=['POST'])
-def sign_up_async():
-    form_data = request.data.decode('utf-8')
-    form_data = json.loads(form_data)
-
-    result = database.sign_up_user(form_data['name'], form_data['email'], form_data['password'])
-    if type(result) is not dict:
-        return '{"result":false, "message":"' + result + '"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
-
-    user = result
-    # TODO 세션에 로그인 정보를 저장
-
-    return '{"result":true}', 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 @app.route('/mypage')

@@ -69,7 +69,7 @@
             signInButton.addClass("btn-loading").prop("disabled", true)
 
             $.ajax({
-                url: "/sign_in",
+                url: "/sign_in.do",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),

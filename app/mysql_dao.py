@@ -1,8 +1,8 @@
-import connection
+import database
 
 
 def connect_result(ec_num):
-    conn = connection.connection()
+    conn = database.connection()
     try:
         sql = "SELECT accepted_name, reaction FROM multi_pred.entry where ec_num =" + "'" + ec_num + "'"
         cursor = conn.cursor()
@@ -22,7 +22,7 @@ def connect_result(ec_num):
 
 
 def get_dbSelect_login(email, pw):
-    conn = connection.connection()
+    conn = database.connection()
     try:
         sql = "SELECT email FROM multi_pred.member where email =" + "'" + email + "'" + "AND pw = '" + pw + "'"
         cursor = conn.cursor()
@@ -41,7 +41,7 @@ def get_dbSelect_login(email, pw):
 
 
 def get_dbSelect_password(email, last):
-    conn = connection.connection()
+    conn = database.connection()
     try:
         sql = "SELECT pw FROM multi_pred.member where email =" + "'" + email + "'" + "AND last = '" + last + "'"
         cursor = conn.cursor()
@@ -58,7 +58,7 @@ def get_dbSelect_password(email, last):
 
 
 def get_tableSelect():
-    conn = connection.connection()
+    conn = database.connection()
     try:
         sql = "SELECT ec_num, accepted_name, reaction FROM multi_pred.entry"
         cursor = conn.cursor()
@@ -77,7 +77,7 @@ def get_tableSelect():
 
 
 def get_dbInsert_register(email, pw, first, last):
-    conn = connection.connection()
+    conn = database.connection()
     try:
         sql = "SELECT email FROM multi_pred.member where email =" + "'" + email + "'"
         cursor = conn.cursor()
@@ -100,7 +100,7 @@ def get_dbInsert_register(email, pw, first, last):
 
 
 def get_saveInfo_Select(mail):
-    conn = connection.connection()
+    conn = database.connection()
     try:
         sql = "SELECT his_num, seq, ec_num, accepted_name, reaction, acc FROM multi_pred.search where mail =" + "'" + mail + "'"
         cursor = conn.cursor()
@@ -125,7 +125,7 @@ def get_saveInfo_Select(mail):
 
 
 def get_dbInsert_history_1(mail, seq, ec_num, acc):
-    conn = connection.connection()
+    conn = database.connection()
     try:
         sql = "SELECT ec_num, accepted_name, reaction FROM multi_pred.entry where ec_num =" + "'" + ec_num + "'"
         cursor = conn.cursor()

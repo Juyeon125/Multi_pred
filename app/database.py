@@ -1,11 +1,19 @@
 import pymysql
+from flask import current_app
 
 
 class Database:
     def __init__(self, host, user, password, database):
         self.conn = pymysql.connect(host=host, user=user, password=password, db=database, charset="utf8")
+        current_app.config['DB'] = self
 
-    def find_by_user_email(self, email):
+    def __del__(self):
+        if self.conn is not None:
+            self.conn.close()
+
+        self.conn = None
+
+    def find_user_by_user_email(self, email):
         cursor = None
         sql = "SELECT * FROM allec.user WHERE email = %s"
         var = (email)
@@ -33,11 +41,11 @@ class Database:
 
         return None
 
-    def sign_up_user(self, name, email, password):
+    def save_user(self, name, email, password):
         cursor = None
 
         # 기존 이메일을 사용하는 유저가 존재하는지 체크
-        user = self.find_by_user_email(email)
+        user = self.find_user_by_user_email(email)
         if user is not None:
             return "exist email"
 
@@ -54,4 +62,30 @@ class Database:
             cursor.close()
 
         # 유저 정보 로딩
-        return self.find_by_user_email(email)
+        return self.find_user_by_user_email(email)
+
+    def find_all_enzyme(self):
+        cursor = None
+        sql = "SELECT * FROM allec.enzyme_info"
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(sql)
+        finally:
+            cursor.close()
+
+        if cursor.rowcount > 0:
+            result_list = []
+            row = cursor.fetchall()
+
+            for row_val in row:
+                result = {
+                    "ec_number": row_val[0],
+                    "accepted_name": row_val[1],
+                    "reaction": row_val[2]
+                }
+                result_list.append(result)
+
+            return result_list
+
+        return []
