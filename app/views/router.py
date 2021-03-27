@@ -1,6 +1,12 @@
+import multiprocessing
+import os
+import time
+
+from Bio import SeqIO
 from flask import current_app, render_template, session, request, jsonify
 
 from app.blueprints import app as a
+from app.exec.algorithm import predict_deepec
 
 
 @a.context_processor
@@ -11,6 +17,16 @@ def load_logged_in_user():
         user = None
 
     return dict(user=user)
+
+
+def get_requests_path():
+    cur_path = os.path.abspath(os.path.curdir)
+    requests_path = os.path.join(cur_path, "requests")
+
+    if not os.path.exists(requests_path):
+        os.makedirs(requests_path)
+
+    return requests_path
 
 
 @a.route('/', methods=['GET'])
@@ -87,3 +103,65 @@ def enzyme_tree():
     len_data = len(enzyme_info)
 
     return render_template('enzyme_tree.html', enzyme_info=enzyme_info, len_data=len_data)
+
+
+@a.route("/predict.do", methods=['POST'])
+def predict_all():
+    form_data = request.get_json()
+
+    request_folder_path = get_requests_path()
+    timestamp = str(int(time.time() * 10000000))
+
+    output_path = os.path.join(request_folder_path, timestamp)
+    os.makedirs(output_path)
+
+    request_seq_file_path = os.path.join(output_path + "/request_seq.fasta")
+    with open(request_seq_file_path, 'w+') as request_seq_file:
+        form_data['sequence_text'] = form_data['sequence_text'].replace("\r\n", "\n")
+        request_seq_file.write(form_data['sequence_text'])
+
+    request_sequence = []
+
+    for record in SeqIO.parse(request_seq_file_path, "fasta"):
+        request_sequence.append({
+            'id': record.id,
+            'name': record.name,
+            'description': record.description,
+            'sequence': str(record.seq)
+        })
+
+    if len(request_sequence) == 0:
+        return '{"result":false, "message":"Can not read sequence data"}', 400, {
+            'Content-Type': 'application/json; charset=utf-8'}
+
+    manager = multiprocessing.Manager()
+    processes = []
+    result = manager.dict()
+
+    p1 = multiprocessing.Process(name='DeepEC', target=predict_deepec,
+                                 args=(request_sequence, output_path, request_seq_file_path, result,))
+    processes.append(p1)
+    # p2 = multiprocessing.Process(name='ECPred', target=predict_ecpred, args=(input_seq, result,))
+    # processes.append(p2)
+    # p3 = multiprocessing.Process(name='DETECT', target=predict_detect, args=(input_seq, result,))
+    # processes.append(p3)
+    # p4 = multiprocessing.Process(name='eCAMI', target=predict_ecami, args=(input_seq, result,))
+    # processes.append(p4)
+
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+    # TODO 결과 종합해서 출력, 깃허브
+    api_result = {}
+    api_result['DeepEC'] = result['DeepEC']
+    # api_result['ECPred'] = result['ECPred']
+    # api_result['DETECT'] = result['DETECT']
+    # api_result['eCAMI'] = result['eCAMI']
+    # api_result['final_result'] = fun(api_result['DeepEC']['deepec_ec'], api_result['ECPred']['ecpred_ec'],
+    #                                  api_result['DETECT']['detect_ec'], api_result['DeepEC']['deepec_acc'],
+    #                                  api_result['ECPred']['ecpred_acc'], api_result['DETECT']['detect_acc'])
+    print(api_result)
+    return api_result

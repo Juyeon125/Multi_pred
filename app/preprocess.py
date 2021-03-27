@@ -7,6 +7,8 @@ import git
 import requests
 from tqdm import tqdm
 
+from app.misc.log import log
+
 
 def get_vendor_path():
     cur_path = os.path.abspath(os.path.curdir)
@@ -28,7 +30,7 @@ def preprocess_deepec():
     vendor_path = get_vendor_path()
 
     # region [ DeepEC Program Check ]
-    print("Check DeepEC Program...")
+    log(message=f"Check DeepEC Program...", keyword="INFO")
     deepec_path = os.path.join(vendor_path, "deepec")
     if not os.path.exists(deepec_path):
         # Cloning DeepEC Program from bitbucket

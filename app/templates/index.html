@@ -149,7 +149,7 @@
             submitButton.addClass("btn-loading").prop("disabled", true);
 
             $.ajax({
-                url: "/predict",
+                url: "/predict.do",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
