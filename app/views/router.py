@@ -1,4 +1,4 @@
-from flask import current_app, render_template, session, request
+from flask import current_app, render_template, session, request, jsonify
 
 from app.blueprints import app as a
 
@@ -48,14 +48,14 @@ def sign_in_async():
     user = db.find_user_by_user_email(form_data['email'])
 
     if user is None:
-        return '{"result":false, "message":"Not found user"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
+        return jsonify({'result': False, 'message': 'not found user'}), 400
 
     if user['password'] != form_data['password']:
-        return '{"result":false, "message":"password_error"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
+        return jsonify({'result': False, 'message': 'password error'}), 400
 
     session['user'] = user
 
-    return '{"result":true}', 200, {'Content-Type': 'application/json; charset=utf-8'}
+    return jsonify({'result': True}), 200
 
 
 @a.route('/sign_up', methods=['GET'])
@@ -68,17 +68,16 @@ def sign_up():
 
 @a.route('/sign_up.do', methods=['POST'])
 def sign_up_async():
-    form_data = request.data.decode('utf-8')
-    form_data = json.loads(form_data)
+    form_data = request.get_json()
+    db = current_app.config['DB']
 
-    result = database.save_user(form_data['name'], form_data['email'], form_data['password'])
+    result = db.save_user(form_data['name'], form_data['email'], form_data['password'])
     if type(result) is not dict:
-        return '{"result":false, "message":"' + result + '"}', 400, {'Content-Type': 'application/json; charset=utf-8'}
+        return jsonify({'result': False, 'message': result}), 400
 
-    user = result
-    session['user'] = user
+    session['user'] = result
 
-    return '{"result":true}', 200, {'Content-Type': 'application/json; charset=utf-8'}
+    return jsonify({'result': True}), 200
 
 
 @a.route('/enzyme_tree', methods=['GET'])

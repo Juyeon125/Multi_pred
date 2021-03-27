@@ -109,7 +109,7 @@
             signUpButton.addClass("btn-loading").prop("disabled", true);
 
             $.ajax({
-                url: "/sign_up",
+                url: "/sign_up.do",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
