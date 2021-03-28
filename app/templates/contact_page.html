@@ -11,7 +11,7 @@
             <p>Please feel free to inquire about any problems you may have while using <strong>All EC</strong></p>
             <p>We are always ready to solve problems :)</p>
         </div>
-        <form class="card my-3">
+        <form id="send_mail_form" class="card my-3">
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 mb-2">Please enter your information</div>
@@ -31,12 +31,64 @@
                 </div>
                 <div class="col-12 mb-3">
                     <label class="form-label" for="mail_content">Please enter your opinion</label>
-                    <textarea id="mail_content" class="form-control" rows="10" maxlength="4000"></textarea>
+                    <textarea id="mail_content" name="mail_content" class="form-control" rows="10" maxlength="4000"></textarea>
                 </div>
                 <div class="col-12 text-end">
-                    <button type="button" class="btn btn-primary" disabled>Send Mail</button>
+                    <button id="btn_send" type="button" class="btn btn-primary" disabled>Send Mail</button>
                 </div>
             </div>
         </form>
     </section>
+{% endblock %}
+
+{% block mainScript %}
+    <script>
+        const nameInput = $("#user_name")
+        const mailInput = $("#user_email")
+        const contentTextarea = $("#mail_content")
+        const sendButton = $("#btn_send")
+
+        function checkSendButton() {
+            let enable = true;
+
+            enable = enable && nameInput.val().length > 0 && mailInput.val().length > 0 && contentTextarea.val().length > 0;
+
+            sendButton.prop("disabled", !enable);
+        }
+
+        nameInput.keyup(function () {
+            checkSendButton();
+        });
+
+        mailInput.keyup(function () {
+            checkSendButton();
+        });
+
+        contentTextarea.keyup(function () {
+            checkSendButton();
+        });
+        sendButton.click(function () {
+            if (sendButton.prop("disabled")) return;
+
+            let data = $("#send_mail_form").serializeObject();
+
+            console.log(data)
+
+            sendButton.addClass("btn-loading").prop("disabled", true);
+            $.ajax({
+                url: "/send_mail",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (res) {
+
+                },
+                error: function (err) {
+
+                }
+            });
+        });
+
+    </script>
 {% endblock %}

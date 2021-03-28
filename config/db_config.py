@@ -1,7 +1,7 @@
 class LocalConfig:
-    DB_HOST = "172.30.240.1"
-    DB_USER = "allec"
-    DB_PASSWORD = "allec"
+    DB_HOST = "127.0.0.1"
+    DB_USER = "root"
+    DB_PASSWORD = "981205"
     DB_DATABASE = "allec"
 
 

@@ -7,6 +7,6 @@ from config.run_config import LocalRunConfig
 app = create_app(LocalLevelConfig, LocalConfig)
 
 if __name__ == "__main__":
-    preprocess.preprocess_deepec()
+    # preprocess.preprocess_deepec()
 
     app.run(**LocalRunConfig)

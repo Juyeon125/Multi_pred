@@ -3,7 +3,7 @@ import os
 import time
 
 from Bio import SeqIO
-from flask import current_app, render_template, session, request, jsonify
+from flask import current_app, render_template, session, request, jsonify, redirect
 
 from app.blueprints import app as a
 from app.exec.algorithm import predict_deepec
@@ -165,3 +165,9 @@ def predict_all():
     #                                  api_result['ECPred']['ecpred_acc'], api_result['DETECT']['detect_acc'])
     print(api_result)
     return api_result
+
+
+@a.route("/logout", methods=['GET'])
+def logout():
+    session.pop('user', None)
+    return redirect("/")

@@ -28,11 +28,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/tabler/css/tabler-payments.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/tabler/css/tabler-vendors.min.css') }}">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
     {% block head %}
     {% endblock %}
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body class="antialiased">
@@ -46,7 +46,7 @@
             <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                 <a href="/">
                     <!--<img src="{{url_for('static', filename='startbootstrap-sb-admin-2-gh-pages/css/sb-admin-2.min.css')}}" alt="ALL_EC" class="navbar-brand-image">-->
-                    <i class="fas fa-cloud-sun me-2 fa-fw"></i> ALL EC
+                    <i class="fas fa-dna me-2 fa-fw"></i>ALL EC
                 </a>
             </h1>
             <div class="collapse navbar-collapse" id="navbar-menu">
@@ -104,7 +104,20 @@
                 {% if user == None %}
                     <a href="/sign_in" class="nav-item text-light">Sign In</a>
                 {% else %}
-                    <div class="nav-item text-light">{{ user.name }}</div>
+                    <div class="nav-item text-light dropdown">
+                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0 show" data-bs-toggle="dropdown">
+                            <img class="avatar avatar-sm" src="{{ url_for('static', filename='img/juyeon_img.jpg') }}"/>
+                            <div class="d-none d-xl-block ps-2">
+                                <div>{{ user.name }}</div>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow show" data-bs-popper="none">
+                            <a href="#" class="dropdown-item">Predict history View & Save</a>
+                            <a href="#" class="dropdown-item">Edit Profile</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
                 {% endif %}
             </div>
         </div>

@@ -6,56 +6,64 @@
     <li class="breadcrumb-item active" aria-current="page"><a href="/about_us">About US</a></li>
 {% endblock %}
 {% block mainContent %}
-    <section id="about_us" class="card my-3">
-        <div class="card-body">
-            <div class="row text-center">
-                <div class="col-12 col-md-6">
-                    <article>
-                        <div class="image round">
-                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
-                        </div>
-                        <header>
-                            <h3>Juyeon Park</h3>
-                        </header>
-                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
-                            2017243063</p>
-                    </article>
+    <section id="about_us" class="my-3 row row-cards">
+        <div class="col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body p-4 text-center">
+                    <img class="avatar avatar-xl mb-3 avatar-rounded"
+                         src="{{ url_for('static', filename='img/juyeon_img.jpg') }}"/>
+                    <h3>Juyeon Park</h3>
+                    <h4>Major field : Bioinformatics</h4>
+                    <h4>University : Sunmoon Univ.</h4>
+                    <h4>Research : Breath</h4>
                 </div>
-                <div class="col-12 col-md-6 mt-3 mt-md-0">
-                    <article>
-                        <div class="image round">
-                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
-                        </div>
-                        <header>
-                            <h3>Juyeon Park</h3>
-                        </header>
-                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
-                            2017243063</p>
-                    </article>
+                <div class="d-flex">
+                    <a href="#" class="card-btn">Email</a>
                 </div>
-                <div class="col-12 col-md-6 mt-3">
-                    <article>
-                        <div class="image round">
-                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
-                        </div>
-                        <header>
-                            <h3>Juyeon Park</h3>
-                        </header>
-                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
-                            2017243063</p>
-                    </article>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body p-4 text-center">
+                    <img class="avatar avatar-xl mb-3 avatar-rounded"
+                         src="{{ url_for('static', filename='img/juyeon_img.jpg') }}"/>
+                    <h3>Mingu Park</h3>
+                    <h4>Major field : Bioinformatics</h4>
+                    <h4>University : Sunmoon Univ.</h4>
+                    <h4>Research : Everything of Computer</h4>
                 </div>
-                <div class="col-12 col-md-6 mt-3">
-                    <article>
-                        <div class="image round">
-                            <img src="{{ url_for('static', filename='img/juyeon_img.jpg') }}" alt="Pic 01"/>
-                        </div>
-                        <header>
-                            <h3>Juyeon Park</h3>
-                        </header>
-                        <p>Date of birth : 1998.12.05<br/>E-mail : juyeone125@gmail.com<br/>Student ID :
-                            2017243063</p>
-                    </article>
+                <div class="d-flex">
+                    <a href="#" class="card-btn">Email</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body p-4 text-center">
+                    <img class="avatar avatar-xl mb-3 avatar-rounded"
+                         src="{{ url_for('static', filename='img/juyeon_img.jpg') }}"/>
+                    <h3>Sora Han</h3>
+                    <h4>Major field : Bioinformatics</h4>
+                    <h4>University : Sunmoon Univ.</h4>
+                    <h4>Research : Everything of Biology</h4>
+                </div>
+                <div class="d-flex">
+                    <a href="#" class="card-btn">Email</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body p-4 text-center">
+                    <img class="avatar avatar-xl mb-3 avatar-rounded"
+                         src="{{ url_for('static', filename='img/juyeon_img.jpg') }}"/>
+                    <h3>Hyun Lee</h3>
+                    <h4>Major field : Computer Science</h4>
+                    <h4>University : Sunmoon Univ.</h4>
+                    <h4>Research : I don't Know</h4>
+                </div>
+                <div class="d-flex">
+                    <a href="#" class="card-btn">Email</a>
                 </div>
             </div>
         </div>

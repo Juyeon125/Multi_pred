@@ -1,38 +1,56 @@
 {% extends "base.html" %}
 {% block title %}Enzyme Tree{% endblock %}
 {% block mainTitle %}Enzyme Tree{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/dataTables/dataTables.bootstrap4.css') }}">
+{% endblock %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><a href="/enzyme_tree">EC Number</a></li>
     <li class="breadcrumb-item active" aria-current="page"><a href="/enzyme_tree">Enzyme Tree</a></li>
 {% endblock %}
 {% block mainContent %}
     <section id="about_us" class="card my-3">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Enzyme Tree</h3>
-        </div>
-        <div class="card-table table-responsive">
-            <table class="table table-vcenter">
-                <thead>
-                <tr>
-                    <th>EC number</th>
-                    <th>Accepted Name</th>
-                    <th>Reaction</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for i in range(len_data) %}
-                <tr>
-                    <td class="text-muted">{{ enzyme_info[i]['ec_number'] }}</td>
-                    <td class="text-muted">{{ enzyme_info[i]['accepted_name'] }}</td>
-                    <td class="text-muted">{{ enzyme_info[i]['reaction'] }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Enzyme Tree</h3>
+            </div>
+            <div class="card-table table-responsive">
+                <table id="enzyme-table" class="table table-vcenter">
+                    <thead>
+                    <tr>
+                        <th>EC number</th>
+                        <th>Accepted Name</th>
+                        <th>Reaction</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in range(len_data) %}
+                        <tr>
+                            <td class="text-muted">{{ enzyme_info[i]['ec_number'] }}</td>
+                            <td class="text-muted">{{ enzyme_info[i]['accepted_name'] }}</td>
+                            <td class="text-muted">{{ enzyme_info[i]['reaction'] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
+            </div>
         </div>
-    </div>
     </section>
+{% endblock %}
+{% block mainScript %}
+    <script src="{{ url_for('static', filename='vendor/dataTables/jquery.dataTables.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/dataTables/dataTables.bootstrap4.js') }}"></script>
+
+    <script>
+        jQuery(function($){
+            $("#enzyme-table").DataTable();
+        });
+
+        $("#enzyme-table").DataTable({
+            order: [],
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            displayLength: 10
+        });
+    </script>
 {% endblock %}

@@ -66,7 +66,7 @@ class Database:
 
     def find_all_enzyme(self):
         cursor = None
-        sql = "SELECT * FROM allec.enzyme_info"
+        sql = "select ec_num, accepted_name, reaction from enzyme order by class, subclass, subsubclass, serial"
 
         try:
             cursor = self.conn.cursor()

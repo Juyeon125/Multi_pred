@@ -31,7 +31,30 @@ a {
     background: #4e2b01;
 }
 
-.center_div{
+.center_div {
     margin: 0 auto;
-    width:80%
+    width: 80%
+}
+
+.dataTables_filter, div.dataTables_wrapper div.dataTables_paginate.paging_simple_numbers {
+    margin-right: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+div.dataTables_wrapper div.dataTables_length, div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    margin-top: 0.5rem;
+    margin-left: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.page-item.active .page-link {
+    background-color: #723500;
+    border-color: #a37852;
+    box-shadow: 0 0 0 .25rem rgba(163, 120, 82, .25);
+}
+
+.table thead th {
+    background-color: #fcffda;
 }
