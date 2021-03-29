@@ -6,7 +6,7 @@ from Bio import SeqIO
 from flask import current_app, render_template, session, request, jsonify, redirect
 
 from app.blueprints import app as a
-from app.exec.algorithm import predict_deepec
+from app.exec.algorithm import predict_deepec, predict_ecpred, predict_ecami
 
 
 @a.context_processor
@@ -138,13 +138,18 @@ def predict_all():
     processes = []
     result = manager.dict()
 
-    p1 = multiprocessing.Process(name='DeepEC', target=predict_deepec,
-                                 args=(request_sequence, output_path, request_seq_file_path, result,))
-    processes.append(p1)
-    # p2 = multiprocessing.Process(name='ECPred', target=predict_ecpred, args=(input_seq, result,))
+    # p1 = multiprocessing.Process(name='DeepEC', target=predict_deepec,
+    #                              args=(request_sequence, output_path, request_seq_file_path, result,))
+    # processes.append(p1)
+
+    # p2 = multiprocessing.Process(name='ECPred', target=predict_ecpred,
+    #                              args=(request_sequence, output_path, request_seq_file_path, result,))
     # processes.append(p2)
-    # p3 = multiprocessing.Process(name='DETECT', target=predict_detect, args=(input_seq, result,))
-    # processes.append(p3)
+
+    p3 = multiprocessing.Process(name='eCAMI', target=predict_ecami,
+                                 args=(request_sequence, output_path, request_seq_file_path, result,))
+    processes.append(p3)
+
     # p4 = multiprocessing.Process(name='eCAMI', target=predict_ecami, args=(input_seq, result,))
     # processes.append(p4)
 
