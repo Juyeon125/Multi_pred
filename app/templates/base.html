@@ -105,14 +105,14 @@
                     <a href="/sign_in" class="nav-item text-light">Sign In</a>
                 {% else %}
                     <div class="nav-item text-light dropdown">
-                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0 show" data-bs-toggle="dropdown">
+                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown">
                             <img class="avatar avatar-sm" src="{{ url_for('static', filename='img/juyeon_img.jpg') }}"/>
                             <div class="d-none d-xl-block ps-2">
                                 <div>{{ user.name }}</div>
                             </div>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow show" data-bs-popper="none">
-                            <a href="predict_hist" class="dropdown-item">Predict history View & Save</a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" data-bs-popper="none">
+                            <a href="predict_hist" class="dropdown-item">Predict history</a>
                             <a href="#" class="dropdown-item">Edit Profile</a>
                             <div class="dropdown-divider"></div>
                             <a href="/logout" class="dropdown-item">Logout</a>

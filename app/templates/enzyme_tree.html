@@ -2,7 +2,7 @@
 {% block title %}Enzyme Tree{% endblock %}
 {% block mainTitle %}Enzyme Tree{% endblock %}
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/dataTables/dataTables.bootstrap4.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.css') }}">
 {% endblock %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -39,17 +39,17 @@
     </section>
 {% endblock %}
 {% block mainScript %}
-    <script src="{{ url_for('static', filename='vendor/dataTables/jquery.dataTables.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/dataTables/dataTables.bootstrap4.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.js') }}"></script>
 
     <script>
-        jQuery(function($){
+        jQuery(function ($) {
             $("#enzyme-table").DataTable();
         });
 
         $("#enzyme-table").DataTable({
             order: [],
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            lengthMenu: [10, 20, 30, 40, 50],
             displayLength: 10
         });
     </script>

@@ -1,18 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Predict History View & Save{% endblock %}
-{% block mainTitle %}Predict History View & Save{% endblock %}
+{% block title %}Predict History{% endblock %}
+{% block mainTitle %}Predict History{% endblock %}
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/dataTables/dataTables.bootstrap4.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.css') }}">
 {% endblock %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a href="/predict_hist">Predict History View & Save</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="/predict_hist">Predict History</a></li>
 {% endblock %}
 {% block mainContent %}
     <section id="prediction_hist" class="card my-3">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Predict History View & Save</h3>
+                <h3 class="card-title">Predict History</h3>
             </div>
             <div class="card-table table-responsive">
                 <table id="enzyme-table" class="table table-vcenter">
@@ -45,8 +45,8 @@
     </section>
 {% endblock %}
 {% block mainScript %}
-    <script src="{{ url_for('static', filename='vendor/dataTables/jquery.dataTables.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/dataTables/dataTables.bootstrap4.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.js') }}"></script>
 
     <script>
         jQuery(function($){
