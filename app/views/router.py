@@ -171,3 +171,12 @@ def predict_all():
 def logout():
     session.pop('user', None)
     return redirect("/")
+
+
+@a.route("/predict_hist",  methods=['GET'])
+def predict_hist():
+    db = current_app.config['DB']
+    history_info = db.find_all_history()
+    len_data = len(history_info)
+
+    return render_template('predict_hist.html', history_info=history_info, len_data=len_data)

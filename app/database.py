@@ -41,6 +41,7 @@ class Database:
 
         return None
 
+
     def save_user(self, name, email, password):
         cursor = None
 
@@ -64,6 +65,7 @@ class Database:
         # 유저 정보 로딩
         return self.find_user_by_user_email(email)
 
+
     def find_all_enzyme(self):
         cursor = None
         sql = "select ec_num, accepted_name, reaction from enzyme order by class, subclass, subsubclass, serial"
@@ -83,6 +85,36 @@ class Database:
                     "ec_number": row_val[0],
                     "accepted_name": row_val[1],
                     "reaction": row_val[2]
+                }
+                result_list.append(result)
+
+            return result_list
+
+        return []
+
+
+    def find_all_history(self):
+        cursor = None
+        sql = "select * from predict_hist"
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(sql)
+        finally:
+            cursor.close()
+
+        if cursor.rowcount > 0:
+            result_list = []
+            row = cursor.fetchall()
+
+            for row_val in row:
+                result = {
+                    "sequence": row_val[1],
+                    "method": row_val[2],
+                    "ec_number": row_val[3],
+                    "accepted_name": row_val[4],
+                    "reaction": row_val[5],
+                    "accuracy": row_val[6]
                 }
                 result_list.append(result)
 
