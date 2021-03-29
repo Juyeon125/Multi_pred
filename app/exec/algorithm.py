@@ -1,8 +1,7 @@
 import os
-import platform
 import subprocess
 
-from app.preprocess import get_deepec_path
+from app.preprocess import get_deepec_path, get_ecpred_path, get_ecami_path
 
 
 def predict_deepec(input_sequence, output_path, req_seq_file_path, result):
@@ -10,7 +9,8 @@ def predict_deepec(input_sequence, output_path, req_seq_file_path, result):
     deepec_output_path = os.path.join(output_path, "deepec")
     os.makedirs(deepec_output_path)
 
-    subprocess.call(f"{get_deepec_path()}/venv/bin/{'python' if platform.system() == 'Linux' else 'python.exe'} "
+    subprocess.call(f"export PATH={get_deepec_path()}/diamond:$PATH;"
+                    f"{get_deepec_path()}/venv/bin/python "
                     f"{deepec_execute_path} "
                     f"-i {req_seq_file_path} "
                     f"-o {deepec_output_path}", shell=True)
@@ -76,6 +76,38 @@ def predict_deepec(input_sequence, output_path, req_seq_file_path, result):
     result.update({'DeepEC': final_result})
 
 
+def predict_ecpred(input_sequence, output_path, req_seq_file_path, result):
+    ecpred_execute_path = get_ecpred_path() + "/ECPred.jar"
+    ecpred_output_path = os.path.join(output_path, "ecpred")
+    os.makedirs(ecpred_output_path)
+
+    subprocess.run(f"cd {get_ecpred_path()};"
+                   f"java -jar {ecpred_execute_path} "
+                   f"weighted "
+                   f"{req_seq_file_path} "
+                   f"{get_ecpred_path()}/ "
+                   f"temp/ "
+                   f"{ecpred_output_path}/results.tsv", shell=True)
+
+    result.update({'ECPred': None})
+
+
+def predict_ecami(input_sequence, output_path, req_seq_file_path, result):
+    ecami_execute_path = get_ecami_path() + "/prediction.py"
+    ecami_output_path = os.path.join(output_path, "ecami")
+    os.makedirs(ecami_output_path)
+
+    subprocess.run(f"cd {get_ecami_path()};"
+                   f"{get_ecami_path()}/venv/bin/python "
+                   f"{ecami_execute_path} "
+                   f"-jobs 4 "
+                   f"-input {req_seq_file_path} "
+                   f"-kmer_db CAZyme "
+                   f"-output {ecami_output_path}/result.txt", shell=True)
+
+    result.update({'eCAMI': None})
+
+
 def predict_detect(input_seq, result):
     timestamp = str(round(datetime.utcnow().timestamp() * 1000))
 
@@ -115,78 +147,3 @@ def predict_detect(input_seq, result):
                               "detect_reac": alpha_info[1]}
 
     result.update({'DETECT': detect_result_json})
-
-
-def predict_ecami(input_seq, result):
-    timestamp = str(round(datetime.utcnow().timestamp() * 1000))
-    ecami_input_path = f'/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Input/{timestamp}.fasta'
-
-    file = open(ecami_input_path, 'w')
-    file.write('>Sample\n' + input_seq)
-    file.close()
-
-    ecami_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/eCAMI"
-    ecami_execute_path = os.path.join(ecami_path, "prediction.py")
-    ecami_kmer_db_path = os.path.join(ecami_path, "CAZyme")
-    ecami_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
-                                     f"{timestamp}_ecami_output.txt")
-
-    subprocess.run(["python3", ecami_execute_path,
-                    "-input", ecami_input_path,
-                    "-kmer_db", ecami_kmer_db_path,
-                    "-output", ecami_output_path])
-
-    file = open(ecami_output_path, 'r')
-    s = file.read()
-    if s == "":
-        ecami_result_json = {"ecami_ec": "Unpredictable", "ecami_name": "", "ecami_reac": ""}
-    else:
-        s_split = s.split("\t")
-        s_double_split = s_split[2].split("|")
-        s_result_split = s_double_split[3].split(":")
-
-        ecami_ec = s_result_split[0]
-
-        alpha_info = mysql_dao.connect_result(ecami_ec)
-
-        ecami_result_json = {"ecami_ec": ecami_ec, "ecami_name": alpha_info[0], "ecami_reac": alpha_info[1]}
-
-    file.close()
-
-    result.update({'eCAMI': ecami_result_json})
-
-
-def predict_ecpred(input_seq, result):
-    timestamp = str(round(datetime.utcnow().timestamp() * 1000))
-    ecpred_input_path = f'/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Input/{timestamp}.fasta'
-
-    file = open(ecpred_input_path, 'w')
-    file.write('>Sample\n' + input_seq)
-    file.close()
-
-    ecpred_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/ECPred/"
-    ecpred_execute_path = os.path.join(ecpred_path, "ECPred.jar")
-    ecpred_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
-                                      f"{timestamp}_ecpred_output.tsv")
-
-    subprocess.run(["java", "-jar", ecpred_execute_path,
-                    "blast", ecpred_input_path,
-                    ecpred_path, "temp/",
-                    ecpred_output_path])
-
-    file = open(ecpred_output_path, 'r')
-    result_ecpred = file.read()
-
-    result_ecpred_split = result_ecpred.split("\n")
-    ec_number_ecpred = result_ecpred_split[1].split("\t")
-    ecpred_ec = ec_number_ecpred[1]
-    ecpred_acc = float(ec_number_ecpred[2])
-
-    alpha_info = mysql_dao.connect_result(ecpred_ec)
-
-    ecpred_result_json = {"ecpred_ec": ecpred_ec, "ecpred_acc": ecpred_acc, "ecpred_name": alpha_info[0],
-                          "ecpred_reac": alpha_info[1]}
-
-    file.close()
-
-    result.update({'ECPred': ecpred_result_json})
