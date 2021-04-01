@@ -58,3 +58,37 @@ div.dataTables_wrapper div.dataTables_length, div.dataTables_wrapper div.dataTab
 .table thead th {
     background-color: #fcffda;
 }
+
+.list {
+    list-style: none;
+    padding: 0;
+}
+
+details {
+    transition: height 0.3s;
+}
+
+details:not([open]) {
+    height: 40px;
+}
+
+details[open] {
+    height: 120px;
+}
+
+details > summary {
+    list-style: none;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: #f4f4f4;
+    cursor: pointer;
+    display: block;
+}
+
+details > summary::-webkit-details-marker {
+    display: none;
+}
+
+ul{
+    -webkit-margin-start: 0;
+}

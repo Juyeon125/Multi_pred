@@ -178,6 +178,11 @@ def logout():
     return redirect("/")
 
 
+@a.route("/test", methods=['GET'])
+def test():
+    return render_template("test.html")
+
+
 @a.route("/predict_hist",  methods=['GET'])
 def predict_hist():
     db = current_app.config['DB']
