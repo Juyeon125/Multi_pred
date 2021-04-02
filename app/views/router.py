@@ -6,7 +6,8 @@ from Bio import SeqIO
 from flask import current_app, render_template, session, request, jsonify, redirect
 
 from app.blueprints import app as a
-from app.exec.algorithm import predict_deepec, predict_ecpred, predict_ecami
+from app.exec.algorithm import predict_all_methods
+from app.extensions.extension import NotFoundError, BadRequestError
 
 
 @a.context_processor
@@ -106,7 +107,7 @@ def enzyme_tree():
 
 
 @a.route("/predict.do", methods=['POST'])
-def predict_all():
+def predict_all_async():
     form_data = request.get_json()
 
     request_folder_path = get_requests_path()
@@ -134,42 +135,20 @@ def predict_all():
         return '{"result":false, "message":"Can not read sequence data"}', 400, {
             'Content-Type': 'application/json; charset=utf-8'}
 
-    manager = multiprocessing.Manager()
-    processes = []
-    result = manager.dict()
+    job = {
+        "idx": timestamp,
+        "user_idx": session['user']['user_idx'] if 'user' in session.keys() else None,
+        "req_sequences": form_data['sequence_text']
+    }
 
-    # p1 = multiprocessing.Process(name='DeepEC', target=predict_deepec,
-    #                              args=(request_sequence, output_path, request_seq_file_path, result,))
-    # processes.append(p1)
+    db = current_app.config['DB']
+    job = db.save_job(job)
 
-    # p2 = multiprocessing.Process(name='ECPred', target=predict_ecpred,
-    #                              args=(request_sequence, output_path, request_seq_file_path, result,))
-    # processes.append(p2)
+    job_process = multiprocessing.Process(name=job['idx'], target=predict_all_methods,
+                                          args=(job, request_sequence, output_path, request_seq_file_path,))
+    job_process.start()
 
-    p3 = multiprocessing.Process(name='eCAMI', target=predict_ecami,
-                                 args=(request_sequence, output_path, request_seq_file_path, result,))
-    processes.append(p3)
-
-    # p4 = multiprocessing.Process(name='eCAMI', target=predict_ecami, args=(input_seq, result,))
-    # processes.append(p4)
-
-    for p in processes:
-        p.start()
-
-    for p in processes:
-        p.join()
-
-    # TODO 결과 종합해서 출력, 깃허브
-    api_result = {}
-    api_result['DeepEC'] = result['DeepEC']
-    # api_result['ECPred'] = result['ECPred']
-    # api_result['DETECT'] = result['DETECT']
-    # api_result['eCAMI'] = result['eCAMI']
-    # api_result['final_result'] = fun(api_result['DeepEC']['deepec_ec'], api_result['ECPred']['ecpred_ec'],
-    #                                  api_result['DETECT']['detect_ec'], api_result['DeepEC']['deepec_acc'],
-    #                                  api_result['ECPred']['ecpred_acc'], api_result['DETECT']['detect_acc'])
-    print(api_result)
-    return api_result
+    return job
 
 
 @a.route("/logout", methods=['GET'])
@@ -183,10 +162,51 @@ def test():
     return render_template("test.html")
 
 
-@a.route("/predict_hist",  methods=['GET'])
+@a.route("/predict_hist", methods=['GET'])
 def predict_hist():
     db = current_app.config['DB']
-    history_info = db.find_all_history()
-    len_data = len(history_info)
+    job_idx = request.args.get('job_idx')
 
-    return render_template('predict_hist.html', history_info=history_info, len_data=len_data)
+    job = db.find_job_by_idx(job_idx)
+    if job is None:
+        raise NotFoundError(message="Didn't find Job ID!")
+
+    return render_template('predict_hist.html', job_idx=job_idx, job=job)
+
+
+@a.route("/predict_hist.do", methods=['GET'])
+def predict_history_async():
+    db = current_app.config['DB']
+    job_idx = request.args.get('job_idx')
+
+    job = db.find_job_by_idx(job_idx)
+    if job is None:
+        raise NotFoundError(message="Didn't find Job ID!")
+
+    job_results = db.find_job_results_by_job_idx(job.idx)
+    return job_results
+
+
+@a.route("/predict_show_log.do", methods=['GET'])
+def predict_show_log():
+    db = current_app.config['DB']
+    job_idx = request.args.get('job_idx')
+
+    job = db.find_job_by_idx(job_idx)
+    if job is None:
+        raise NotFoundError(message="Didn't find Job ID!")
+
+    methods = ['DeepEC', 'ECPred', 'DETECTv2', 'eCAMI']
+    method = request.args.get('method')
+    if method not in methods:
+        raise BadRequestError(message=f"Can't support method: [{method}]")
+
+    log_path = os.path.join(get_requests_path(), job.idx, method, f"{method}.log")
+    if not os.path.exists(log_path):
+        return {"result": False}
+
+    with open(log_path, 'r') as f:
+        log_content = f.readlines()
+        log_content = "".join(log_content)
+
+    return {"result": True, "data": log_content}

@@ -157,7 +157,7 @@
                 data: JSON.stringify(data),
                 dataType: "json",
                 success: function (res) {
-
+                    location.href = "/predict_hist?job_idx=" + res.idx
                 },
                 error: function (err) {
                     submitButton.removeClass("btn-loading").prop("disabled", false);

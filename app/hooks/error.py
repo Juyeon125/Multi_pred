@@ -5,14 +5,19 @@ from flask import current_app, jsonify, request, render_template
 from pydantic import ValidationError
 from werkzeug.exceptions import HTTPException
 
+from app.extensions.extension import BadRequestError, NotFoundError
+
 
 def broad_exception_handler(e: Exception):
     path = request.path
     if '.do' not in path:
         # View Error
         if isinstance(e, HTTPException):
-            return render_template('error.html', user=None), e.code
-
+            return render_template('error.html', user=None, message=e.description), e.code
+        elif isinstance(e, BadRequestError):
+            return render_template('error.html', user=None, message=e.message), e.code
+        elif isinstance(e, NotFoundError):
+            return render_template('error.html', user=None, message=e.message), e.code
         else:
             return render_template('error.html', user=None, message=e.message), 500
 

@@ -9,75 +9,229 @@
     <li class="breadcrumb-item active" aria-current="page"><a href="/predict_hist">Predict History</a></li>
 {% endblock %}
 {% block mainContent %}
-    <section id="predict_hist" class="card my-3">
-    <div class="card-body">
-        <div>
-            <h3>EC number : 1.1.1.1</h3>
-        </div>
-        <ul class="list mt-3">
-            <li>
-                <details>
-                    <summary class="desc">
-                        All EC
-                    </summary>
-                    <div class="mt-2">
-                        <p>EC number : 1.1.1.1</p>
-                        <p>Accepted Name : 삐리리</p>
-                        <p>Reaction : 삐리리</p>
+    <section id="predict_hist" class="card my-3 predict-history">
+        <div class="card-body">
+            <div>
+                <div class="mb-1 text-h2">Request</div>
+                <p class="mt-2"><strong>JOB ID:</strong> {{ job.idx }}</p>
+                <p class="mt-2"><strong>Request Time:</strong> {{ job.created_datetime }}</p>
+                <p class="mt-2"><strong>Request Sequences</strong></p>
+                <textarea class="form-control mt-1" rows="8"
+                          title="request_sequences">{{ job.req_sequences }}</textarea>
+            </div>
+            <div class="mt-4 mb-1 text-h2">Prediction Result</div>
+            <ul class="list">
+                <li id="allec" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_all_ec"
+                         aria-expanded="true" aria-controls="collapse_all_ec">
+                        ALL EC
                     </div>
-                </details>
-            </li>
-            <li>
-                <details>
-                    <summary class="desc">
+                    <div class="ph-body p-3 collapse show" id="collapse_all_ec">
+                        <div class="skeleton-heading"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                    </div>
+                </li>
+                <li id="deepec" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_deepec"
+                         aria-expanded="true" aria-controls="collapse_deepec">
                         DeepEC
-                    </summary>
-                    <div class="mt-2">
-                        <p>EC number : 1.1.1.1</p>
-                        <p>Accepted Name : 삐리리</p>
-                        <p>Reaction : 삐리리</p>
                     </div>
-                </details>
-            </li>
-            <li>
-                <details>
-                    <summary class="desc">
+                    <div class="ph-body p-3 collapse show" id="collapse_deepec">
+                        <div class="skeleton-heading"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                    </div>
+                </li>
+                <li id="ecpred" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ecpred"
+                         aria-expanded="true" aria-controls="collapse_ecpred">
                         ECPred
-                    </summary>
-                    <div class="mt-2">
-                        <p>EC number : 1.1.1.1</p>
-                        <p>Accepted Name : 삐리리</p>
-                        <p>Reaction : 삐리리</p>
                     </div>
-                </details>
-            </li>
-            <li>
-                <details>
-                    <summary class="desc">
-                        DETECT v2
-                    </summary>
-                    <div class="mt-2">
-                        <p>EC number : 1.1.1.1</p>
-                        <p>Accepted Name : 삐리리</p>
-                        <p>Reaction : 삐리리</p>
+                    <div class="ph-body p-3 collapse show" id="collapse_ecpred">
+                        <div class="skeleton-heading"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
                     </div>
-                </details>
-            </li>
-            <li>
-                <details>
-                    <summary class="desc">
+                </li>
+                <li id="detect_v2" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_detect_v2"
+                         aria-expanded="true" aria-controls="collapse_detect_v2">
+                        DETECTv2
+                    </div>
+                    <div class="ph-body p-3 collapse show" id="collapse_detect_v2">
+                        <div class="skeleton-heading"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                    </div>
+                </li>
+                <li id="ecami" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ecami"
+                         aria-expanded="true" aria-controls="collapse_ecami">
                         eCAMI
-                    </summary>
-                    <div class="mt-2">
-                        <p>EC number : 1.1.1.1</p>
-                        <p>Accepted Name : 삐리리</p>
-                        <p>Reaction : 삐리리</p>
                     </div>
-                </details>
-            </li>
-        </ul>
+                    <div class="ph-body p-3 collapse show" id="collapse_ecami">
+                        <div class="skeleton-heading"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <div class="modal modal-blur fade" id="modal_log" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Show Log file</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <label class="form-label">Log Contents</label>
+                                <textarea class="form-control" rows="10" title="log_contents"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-        </section>
 {% endblock %}
 {% block mainScript %}
+    <script>
+        function get_predict_result() {
+            clearInterval(intervalIdx);
+            $.ajax({
+                url: "/predict_hist.do",
+                methods: "GET",
+                data: {
+                    "job_idx": {{ job.idx }}
+                },
+                dataType: "json",
+                success: function (res) {
+                    draw_predict_result(res)
+                },
+                error: function (err) {
+                    alert(err.responseJSON.message);
+                    intervalIdx = setInterval(get_predict_result, 2000);
+                }
+            });
+        }
+
+        function draw_predict_result(res) {
+
+            let reload = false;
+
+            // region [ Draw DeepEC Result ]
+            const deepec_root = $("li#deepec");
+            const deepec_body = deepec_root.find(".ph-body");
+            if (res['DeepEC'].length !== 0 && deepec_body.find(".skeleton-heading").length > 0) {
+                deepec_body.empty();
+
+                const deepec_result = res['DeepEC'];
+                for (let i = 0; i < deepec_result.length; i++) {
+
+                }
+
+                deepec_body.append(create_show_logs_button("{{ job.idx }}", "DeepEC"));
+            }
+            reload = reload || res['DeepEC'].length === 0
+            // endregion
+
+            // region [ Draw ECPred Result ]
+            const ecpred_root = $("li#ecpred");
+            const ecpred_body = ecpred_root.find(".ph-body");
+            if (res['ECPred'].length !== 0 && ecpred_body.find(".skeleton-heading").length > 0) {
+                ecpred_body.empty();
+
+                const ecpred_result = res['ECPred'];
+                for (let i = 0; i < ecpred_result.length; i++) {
+
+                }
+
+                ecpred_body.append(create_show_logs_button("{{ job.idx }}", "ECPred"));
+            }
+            reload = reload || res['ECPred'].length === 0
+            // endregion
+
+            // region [ Draw DETECTv2 Result ]
+            const detect_v2_root = $("li#detect_v2");
+            const detect_v2_body = detect_v2_root.find(".ph-body");
+            if (res['DETECTv2'].length !== 0 && detect_v2_body.find(".skeleton-heading").length > 0) {
+                detect_v2_body.empty();
+
+                const detect_v2_result = res['DETECTv2'];
+                for (let i = 0; i < detect_v2_result.length; i++) {
+
+                }
+
+                detect_v2_body.append(create_show_logs_button("{{ job.idx }}", "DETECTv2"));
+            }
+            reload = reload || res['DETECTv2'].length === 0
+            // endregion
+
+            // region [ Draw eCAMI Result ]
+            const ecami_root = $("li#ecami");
+            const ecami_body = ecami_root.find(".ph-body");
+            if (res['eCAMI'].length !== 0 && ecami_body.find(".skeleton-heading").length > 0) {
+                ecami_body.empty();
+
+                const ecami_result = res['eCAMI'];
+                for (let i = 0; i < ecami_result.length; i++) {
+
+                }
+
+                ecami_body.append(create_show_logs_button("{{ job.idx }}", "eCAMI"));
+            }
+            reload = reload || res['eCAMI'].length === 0
+            // endregion
+
+            if (reload) intervalIdx = setInterval(get_predict_result, 2000);
+
+        }
+
+        function create_show_logs_button(job_idx, method) {
+            const dom = $('<button class="btn mt-3 float-end" data-bs-toggle="modal" data-bs-target="#modal_log"><i class="far fa-file-alt me-2"></i> Show Logs</button>');
+            dom.click(function () {
+                if (dom.hasClass("btn-loading")) return;
+
+                dom.addClass("btn-loading");
+
+                $.ajax({
+                    url: "predict_show_log.do",
+                    method: "GET",
+                    data: {
+                        job_idx: {{ job_idx }},
+                        method: method
+                    },
+                    datatype: "json",
+                    success: function (res) {
+                        dom.removeClass("btn-loading");
+                        if (res.result === false) return;
+                        $("#modal_log textarea").val(res.data);
+                    },
+                    error: function (err) {
+
+                    }
+                });
+            });
+
+            return dom;
+        }
+
+        let intervalIdx = setInterval(get_predict_result, 2000);
+    </script>
 {% endblock %}

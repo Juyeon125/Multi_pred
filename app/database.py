@@ -1,10 +1,25 @@
 import pymysql
 from flask import current_app
 
+from app.domain import Job, JobResult
+
 
 class Database:
+    host = None
+    user = None
+    password = None
+    database = None
+
+    conn = None
+
     def __init__(self, host, user, password, database):
-        self.conn = pymysql.connect(host=host, user=user, password=password, db=database, charset="utf8")
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
+
+        self.connect_to_database()
+
         current_app.config['DB'] = self
 
     def __del__(self):
@@ -13,13 +28,24 @@ class Database:
 
         self.conn = None
 
+    def connect_to_database(self):
+        self.conn = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.database,
+                                    charset="utf8")
+
+    def get_cursor(self):
+        if self.conn.open:
+            return self.conn.cursor()
+        else:
+            self.connect_to_database()
+            return self.conn.cursor()
+
     def find_user_by_user_email(self, email):
         cursor = None
         sql = "SELECT * FROM allec.user WHERE email = %s"
         var = (email)
 
         try:
-            cursor = self.conn.cursor()
+            cursor = self.get_cursor()
             cursor.execute(sql, var)
         finally:
             cursor.close()
@@ -41,7 +67,6 @@ class Database:
 
         return None
 
-
     def save_user(self, name, email, password):
         cursor = None
 
@@ -56,7 +81,7 @@ class Database:
 
         # Insert 실행
         try:
-            cursor = self.conn.cursor()
+            cursor = self.get_cursor()
             cursor.execute(sql, var)
             self.conn.commit()
         finally:
@@ -65,13 +90,92 @@ class Database:
         # 유저 정보 로딩
         return self.find_user_by_user_email(email)
 
+    def save_job(self, job):
+        cursor = None
+
+        # Insert Query SQL
+        sql = f"INSERT INTO allec.job (`idx`, `user_idx`, `req_sequences`) VALUES (%s, %s, %s)"
+        var = (job['idx'], job['user_idx'], job['req_sequences'])
+
+        try:
+            cursor = self.get_cursor()
+            cursor.execute(sql, var)
+            self.conn.commit()
+        finally:
+            cursor.close()
+
+        return job
+
+    def find_job_by_idx(self, idx):
+        cursor = None
+
+        # Find Job SQL Query
+        sql = "SELECT * FROM allec.job WHERE idx = %s"
+        var = idx
+
+        try:
+            cursor = self.get_cursor()
+            cursor.execute(sql, var)
+        finally:
+            cursor.close()
+
+        if cursor.rowcount == 1:
+            return Job(cursor.fetchone())
+
+        return None
+
+    def save_job_result(self, job_result):
+        cursor = None
+
+        # Insert Query SQL
+        sql = f"INSERT INTO allec.job_result (`job_idx`, `methods`, `query_id`, `sequence`, `ec_number`) " \
+              f"VALUES (%s, %s, %s, %s, %s)"
+
+        var = (job_result['job_idx'], job_result['methods'], job_result['query_id'], job_result['sequence'],
+               job_result['ec_number'])
+
+        try:
+            cursor = self.get_cursor()
+            cursor.execute(sql, var)
+            self.conn.commit()
+        finally:
+            cursor.close()
+
+        return job_result
+
+    def find_job_results_by_job_idx(self, job_idx):
+        cursor = None
+
+        # Find Job SQL Query
+        sql = "SELECT * FROM allec.job_result WHERE job_idx = %s"
+        var = job_idx
+
+        try:
+            cursor = self.get_cursor()
+            cursor.execute(sql, var)
+        finally:
+            cursor.close()
+
+        rows = cursor.fetchall()
+        results = {
+            "DeepEC": [],
+            "ECPred": [],
+            "DETECTv2": [],
+            "eCAMI": []
+        }
+
+        for row in rows:
+            jr = JobResult(row)
+            results[jr.methods].append(jr.__dict__)
+
+        return results
 
     def find_all_enzyme(self):
         cursor = None
         sql = "select ec_num, accepted_name, reaction from enzyme order by class, subclass, subsubclass, serial"
 
         try:
-            cursor = self.conn.cursor()
+            cursor = self.get_cursor()
             cursor.execute(sql)
         finally:
             cursor.close()
@@ -92,13 +196,12 @@ class Database:
 
         return []
 
-
     def find_all_history(self):
         cursor = None
         sql = "select * from predict_hist"
 
         try:
-            cursor = self.conn.cursor()
+            cursor = self.get_cursor()
             cursor.execute(sql)
         finally:
             cursor.close()
