@@ -1,53 +1,261 @@
 {% extends "base.html" %}
-{% block title %}My Predict List{% endblock %}
-{% block mainTitle %}My Predict List{% endblock %}
+{% block title %}My Predicted List{% endblock %}
+{% block mainTitle %}My Predicted List{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.css') }}">
 {% endblock %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a href="/predict_hist">Predict History</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="/user_predict">My Predicted List</a></li>
 {% endblock %}
 {% block mainContent %}
     <section id="user_predict" class="card my-3">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">My Predict List</h3>
-            </div>
-            <div class="card-table table-responsive">
-                <table id="enzyme-table" class="table table-vcenter">
-                    <thead>
-                    <tr>
-                        <th>Job ID</th>
-                        <th>Query ID</th>
-                        <th>Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-muted"></td>
-                            <td class="text-muted"></td>
-                            <td class="text-muted"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="card-body">
+            <div class="mb-1 text-h2">Predicted List</div>
+            <ul class="list mt-3">
+                <li id="result1" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result1"
+                         aria-expanded="true" aria-controls="collapse_result1">
+                        Jod ID > 16173280800929448
+                    </div>
+                    <div class="ph-body p-3 collapse" id="collapse_result1">
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|B8DQX7|HIS5_DESVM</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|Q9JHW2|NIT2_MOUSE</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|A8L1A5|MSHB_FRASN</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li id="result2" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result2"
+                         aria-expanded="true" aria-controls="collapse_result2">
+                        Jod ID > 16173303108665976
+                    </div>
+                    <div class="ph-body p-3 collapse" id="collapse_result2">
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|B8DQX7|HIS5_DESVM</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|Q9JHW2|NIT2_MOUSE</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|A8L1A5|MSHB_FRASN</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li id="result2" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result2"
+                         aria-expanded="true" aria-controls="collapse_result2">
+                        Jod ID > 16173309295840072
+                    </div>
+                    <div class="ph-body p-3 collapse" id="collapse_result2">
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|B8DQX7|HIS5_DESVM</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|Q9JHW2|NIT2_MOUSE</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|A8L1A5|MSHB_FRASN</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li id="result2" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result2"
+                         aria-expanded="true" aria-controls="collapse_result2">
+                        Jod ID > 16175137847537208
+                    </div>
+                    <div class="ph-body p-3 collapse" id="collapse_result2">
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|B8DQX7|HIS5_DESVM</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|Q9JHW2|NIT2_MOUSE</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|A8L1A5|MSHB_FRASN</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li id="result2" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result2"
+                         aria-expanded="true" aria-controls="collapse_result2">
+                        Jod ID > 16175157996784902
+                    </div>
+                    <div class="ph-body p-3 collapse" id="collapse_result2">
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|B8DQX7|HIS5_DESVM</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|Q9JHW2|NIT2_MOUSE</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|A8L1A5|MSHB_FRASN</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li id="result2" class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result2"
+                         aria-expanded="true" aria-controls="collapse_result2">
+                        Jod ID > 16175158538625156
+                    </div>
+                    <div class="ph-body p-3 collapse" id="collapse_result2">
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|B8DQX7|HIS5_DESVM</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|Q9JHW2|NIT2_MOUSE</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 markdown">
+                                <h3>Query ID</h3>
+                                <p>sp|A8L1A5|MSHB_FRASN</p>
+                            </div>
+                            <div class="col-md-6 markdown">
+                                <h3>Date</h3>
+                                <p>2021-04-02 10:48:08</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </section>
 {% endblock %}
 {% block mainScript %}
-    <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.js') }}"></script>
-
-    <script>
-        jQuery(function($){
-            $("#enzyme-table").DataTable();
-        });
-
-        $("#enzyme-table").DataTable({
-            order: [],
-            lengthMenu: [ 10, 20, 30, 40, 50 ],
-            displayLength: 10
-        });
-    </script>
 {% endblock %}

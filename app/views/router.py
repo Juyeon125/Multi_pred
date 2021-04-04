@@ -157,9 +157,9 @@ def logout():
     return redirect("/")
 
 
-@a.route("/test", methods=['GET'])
-def test():
-    return render_template("test.html")
+@a.route("/user_predict", methods=['GET'])
+def user_predict():
+    return render_template("user_predict.html")
 
 
 @a.route("/predict_hist", methods=['GET'])
@@ -210,3 +210,4 @@ def predict_show_log():
         log_content = "".join(log_content)
 
     return {"result": True, "data": log_content}
+
