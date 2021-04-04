@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}My Predict List{% endblock %}
+{% block mainTitle %}My Predict List{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.css') }}">
+{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="/predict_hist">Predict History</a></li>
+{% endblock %}
+{% block mainContent %}
+    <section id="user_predict" class="card my-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">My Predict List</h3>
+            </div>
+            <div class="card-table table-responsive">
+                <table id="enzyme-table" class="table table-vcenter">
+                    <thead>
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Query ID</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-muted"></td>
+                            <td class="text-muted"></td>
+                            <td class="text-muted"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block mainScript %}
+    <script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+
+    <script>
+        jQuery(function($){
+            $("#enzyme-table").DataTable();
+        });
+
+        $("#enzyme-table").DataTable({
+            order: [],
+            lengthMenu: [ 10, 20, 30, 40, 50 ],
+            displayLength: 10
+        });
+    </script>
+{% endblock %}
