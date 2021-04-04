@@ -1,7 +1,7 @@
 import pymysql
 from flask import current_app
 
-from app.domain import Job, JobResult
+from app.domain import Job, JobResult, EnzymeClass
 
 
 class Database:
@@ -30,7 +30,7 @@ class Database:
 
     def connect_to_database(self):
         self.conn = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.database,
-                                    charset="utf8")
+                                    charset="utf8", autocommit=True)
 
     def get_cursor(self):
         if self.conn.open:
@@ -128,11 +128,13 @@ class Database:
         cursor = None
 
         # Insert Query SQL
-        sql = f"INSERT INTO allec.job_result (`job_idx`, `methods`, `query_id`, `sequence`, `ec_number`) " \
-              f"VALUES (%s, %s, %s, %s, %s)"
+        sql = f"INSERT INTO allec.job_result " \
+              f"  (`job_idx`, `methods`, `query_id`, `query_description`, `sequence`, `ec_number`, `accuracy`) " \
+              f"VALUES " \
+              f"  (%s, %s, %s, %s, %s, %s, {job_result['accuracy']})"
 
-        var = (job_result['job_idx'], job_result['methods'], job_result['query_id'], job_result['sequence'],
-               job_result['ec_number'])
+        var = (job_result['job_idx'], job_result['methods'], job_result['query_id'], job_result['query_description'],
+               job_result['sequence'], job_result['ec_number'])
 
         try:
             cursor = self.get_cursor()
@@ -165,10 +167,37 @@ class Database:
         }
 
         for row in rows:
-            jr = JobResult(row)
-            results[jr.methods].append(jr.__dict__)
+            jr = JobResult(row).__dict__
+            if jr['ec_number'] is not None:
+                entry = self.find_enzyme_class_by_ec_number(jr['ec_number'])
+                if isinstance(entry, EnzymeClass):
+                    jr['ec_number'] = entry.__dict__
+                else:
+                    jr['ec_number'] = {
+                        "id": -1,
+                        "ec_num": entry
+                    }
+
+            results[jr['methods']].append(jr)
 
         return results
+
+    def find_enzyme_class_by_ec_number(self, ec_number):
+        cursor = None
+
+        sql = "SELECT * FROM enzyme WHERE ec_num = %s"
+        var = ec_number
+
+        try:
+            cursor = self.get_cursor()
+            cursor.execute(sql, var)
+        finally:
+            cursor.close()
+
+        if cursor.rowcount == 1:
+            return EnzymeClass(cursor.fetchone())
+
+        return ec_number
 
     def find_all_enzyme(self):
         cursor = None

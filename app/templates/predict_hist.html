@@ -9,17 +9,20 @@
     <li class="breadcrumb-item active" aria-current="page"><a href="/predict_hist">Predict History</a></li>
 {% endblock %}
 {% block mainContent %}
-    <section id="predict_hist" class="card my-3 predict-history">
+    <section id="predict_request" class="card my-3 predict-history">
+        <div class="card-header text-h2">Request Job</div>
         <div class="card-body">
-            <div>
-                <div class="mb-1 text-h2">Request</div>
-                <p class="mt-2"><strong>JOB ID:</strong> {{ job.idx }}</p>
-                <p class="mt-2"><strong>Request Time:</strong> {{ job.created_datetime }}</p>
-                <p class="mt-2"><strong>Request Sequences</strong></p>
-                <textarea class="form-control mt-1" rows="8"
-                          title="request_sequences">{{ job.req_sequences }}</textarea>
-            </div>
-            <div class="mt-4 mb-1 text-h2">Prediction Result</div>
+            <p class="mt-2"><strong>Job ID:</strong> {{ job.idx }}</p>
+            <p class="mt-2"><strong>Request Time:</strong> {{ job.created_datetime }}</p>
+            <p class="mt-2"><strong>Status:</strong> {{ job.status }}</p>
+            <p class="mt-2"><strong>Request Sequences</strong></p>
+            <textarea class="form-control mt-1" rows="8"
+                      title="request_sequences">{{ job.req_sequences }}</textarea>
+        </div>
+    </section>
+    <section id="predict_result" class="card my-3">
+        <div class="card-header text-h2">Prediction Result</div>
+        <div class="card-body">
             <ul class="list">
                 <li id="allec" class="ph-item">
                     <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_all_ec"
@@ -27,91 +30,11 @@
                         ALL EC
                     </div>
                     <div class="ph-body p-3 collapse show" id="collapse_all_ec">
-                        <div class="row">
-                            <div class="col-md-6 markdown">
-                                <h3>Query ID</h3>
-                                <p>sp|B8DQX7|HIS5_DESVM</p>
-                            </div>
-                            <div class="col-md-6 markdown">
-                                <h3>Description</h3>
-                                <p>Imidazole glycerol phosphate synthase subunit HisH OS=Desulfovibrio vulgaris (strain
-                                    Miyazaki F / DSM 19637) OX=883 GN=hisH PE=3 SV=1</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>EC number</h3>
-                                <p>1.1.1.1</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Accuracy</h3>
-                                <p>100%</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Accepted Name</h3>
-                                <p>alcohol dehydrogenase</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Reaction</h3>
-                                <p> (1) a primary alcohol + NAD+ = an aldehyde + NADH + H+;;(2) a secondary alcohol +
-                                    NAD+ = a ketone + NADH + H+</p>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-6 markdown">
-                                <h3>Query ID</h3>
-                                <p>sp|Q9JHW2|NIT2_MOUSE</p>
-                            </div>
-                            <div class="col-md-6 markdown">
-                                <h3>Description</h3>
-                                <p>Omega-amidase NIT2 OS=Mus musculus OX=10090 GN=Nit2 PE=1 SV=1</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>EC number</h3>
-                                <p>7.6.2.9</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Accuracy</h3>
-                                <p>100%</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Accepted Name</h3>
-                                <p>ABC-type quaternary amine transporter</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Reaction</h3>
-                                <p> ATP + H2O + quaternary amine-[quaternary amine-binding protein][side 1] = ADP +
-                                    phosphate + quaternary amine[side 2] + [quaternary amine-binding protein][side
-                                    1]</p>
-                            </div>
-                        </div>
-
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-6 markdown">
-                                <h3>Query ID</h3>
-                                <p>sp|A8L1A5|MSHB_FRASN</p>
-                            </div>
-                            <div class="col-md-6 markdown">
-                                <h3>Description</h3>
-                                <p>1D-myo-inositol 2-acetamido-2-deoxy-alpha-D-glucopyranoside deacetylase OS=Frankia sp. (strain EAN1pec) OX=298653 GN=mshB PE=3 SV=1</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>EC number</h3>
-                                <p>4.1.2.30</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Accuracy</h3>
-                                <p>100%</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Accepted Name</h3>
-                                <p>17alpha-hydroxyprogesterone aldolase</p>
-                            </div>
-                            <div class="col-md-6 mt-3 markdown">
-                                <h3>Reaction</h3>
-                                <p>17alpha-hydroxyprogesterone = androstenedione + acetaldehyde</p>
-                            </div>
-                        </div>
+                        <div class="skeleton-heading"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
+                        <div class="skeleton-line skeleton-line-full"></div>
                     </div>
                 </li>
                 <li id="deepec" class="ph-item">
@@ -179,10 +102,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div>
-                                <label class="form-label">Log Contents</label>
-                                <textarea class="form-control" rows="10" title="log_contents"></textarea>
-                            </div>
+                            <textarea class="form-control" rows="10" title="log_contents"></textarea>
                         </div>
                     </div>
                 </div>
@@ -212,7 +132,6 @@
         }
 
         function draw_predict_result(res) {
-
             let reload = false;
 
             // region [ Draw DeepEC Result ]
@@ -223,7 +142,8 @@
 
                 const deepec_result = res['DeepEC'];
                 for (let i = 0; i < deepec_result.length; i++) {
-
+                    if (i === 0) create_query_result(deepec_result[i], deepec_body, false);
+                    else create_query_result(deepec_result[i], deepec_body, true);
                 }
 
                 deepec_body.append(create_show_logs_button("{{ job.idx }}", "DeepEC"));
@@ -239,7 +159,8 @@
 
                 const ecpred_result = res['ECPred'];
                 for (let i = 0; i < ecpred_result.length; i++) {
-
+                    if (i === 0) create_query_result(ecpred_result[i], ecpred_body, false);
+                    else create_query_result(ecpred_result[i], ecpred_body, true);
                 }
 
                 ecpred_body.append(create_show_logs_button("{{ job.idx }}", "ECPred"));
@@ -255,7 +176,8 @@
 
                 const detect_v2_result = res['DETECTv2'];
                 for (let i = 0; i < detect_v2_result.length; i++) {
-
+                    if (i === 0) create_query_result(detect_v2_result[i], detect_v2_body, false);
+                    else create_query_result(detect_v2_result[i], detect_v2_body, true);
                 }
 
                 detect_v2_body.append(create_show_logs_button("{{ job.idx }}", "DETECTv2"));
@@ -271,7 +193,8 @@
 
                 const ecami_result = res['eCAMI'];
                 for (let i = 0; i < ecami_result.length; i++) {
-
+                    if (i === 0) create_query_result(ecami_result[i], ecami_body, false);
+                    else create_query_result(ecami_result[i], ecami_body, true);
                 }
 
                 ecami_body.append(create_show_logs_button("{{ job.idx }}", "eCAMI"));
@@ -281,6 +204,56 @@
 
             if (reload) intervalIdx = setInterval(get_predict_result, 2000);
 
+        }
+
+        function create_query_result(query_result, parent_dom, append_hr) {
+            if (append_hr) parent_dom.append($('<hr />'));
+
+            const dom_row = $('<div class="row"></div>');
+
+            const dom_query_id = $('<div class="col-12 col-md-6 markdown"><h3>Query ID</h3><p>' + query_result['query_id'] + '</p></div>');
+            dom_row.append(dom_query_id);
+
+            const dom_query_description = $('<div class="col-12 col-md-6 mt-3 mt-md-0 markdown"><h3>Query Description</h3><p>' + query_result['query_description'] + '</p></div>')
+            dom_row.append(dom_query_description);
+
+            let ec_number = "";
+
+            let accuracy = query_result['accuracy'] * 100;
+            accuracy = accuracy === 0 ? '-' : accuracy + '%';
+
+            let accepted_name = "";
+
+            let reaction = "";
+
+            if (query_result['ec_number'] === null) {
+                ec_number = 'Not predicted EC number';
+            } else {
+                ec_number = query_result['ec_number']['ec_num'];
+
+                if (query_result['ec_number']['id'] !== -1) {
+                    accepted_name = query_result['ec_number']['accepted_name'];
+                    reaction = query_result['ec_number']['reaction'];
+                }
+            }
+
+            const dom_ec_number = $('<div class="col-12 col-md-6 mt-3 markdown"><h3>EC number</h3><p>' + ec_number + '</p></div>');
+            dom_row.append(dom_ec_number);
+
+            const dom_accuracy = $('<div class="col-12 col-md-6 mt-3 markdown"><h3>Accuracy</h3><p>' + accuracy + '</p></div>');
+            dom_row.append(dom_accuracy);
+
+            if (accepted_name !== "") {
+                const dom_accepted_name = $('<div class="col-12 col-md-6 mt-3 markdown"><h3>Accepted Name</h3><p>' + accepted_name + '</p></div>');
+                dom_row.append(dom_accepted_name);
+            }
+
+            if (reaction !== "") {
+                const dom_reaction = $('<div class="col-12 col-md-6 mt-3 markdown"><h3>Reaction</h3><p>' + reaction + '</p></div>');
+                dom_row.append(dom_reaction);
+            }
+
+            parent_dom.append(dom_row);
         }
 
         function create_show_logs_button(job_idx, method) {

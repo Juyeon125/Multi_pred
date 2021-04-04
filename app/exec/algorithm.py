@@ -27,7 +27,6 @@ def predict_deepec(job_idx, input_enzymes, output_path, req_seq_file_path, resul
     digit3_result = {}
     with open(digit3_path, 'r') as file:
         header = next(file)
-
         for res in file:
             res = res.strip().split('\t')
             query_id = res[0]
@@ -43,7 +42,6 @@ def predict_deepec(job_idx, input_enzymes, output_path, req_seq_file_path, resul
     digit4_result = {}
     with open(digit4_path, 'r') as file:
         header = next(file)
-
         for res in file:
             res = res.strip().split('\t')
             query_id = res[0]
@@ -59,7 +57,6 @@ def predict_deepec(job_idx, input_enzymes, output_path, req_seq_file_path, resul
 
     for enzyme in input_enzymes:
         query_id = enzyme['id']
-        ec_number = None
 
         try:
             digit3 = digit3_result[query_id]
@@ -77,18 +74,20 @@ def predict_deepec(job_idx, input_enzymes, output_path, req_seq_file_path, resul
             ec_activity = digit3['ACTIVITY'] * digit4['ACTIVITY']
             ec_number = digit4_ec
 
-            final_result[query_id] = {"EC": digit4_ec, "ACTIVITY": ec_activity}
+            final_result[query_id] = {"EC": ec_number, "ACTIVITY": ec_activity}
         except KeyError:
-            final_result[query_id] = {"EC": None}
+            final_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
         except ValueError:
-            final_result[query_id] = {"EC": None}
+            final_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
 
         job_result = {
             "job_idx": job_idx,
             "methods": "DeepEC",
             "query_id": query_id,
+            "query_description": enzyme['description'],
             "sequence": enzyme['sequence'],
-            "ec_number": ec_number
+            "ec_number": final_result[query_id]['EC'],
+            "accuracy": final_result[query_id]['ACTIVITY']
         }
 
         current_app.config['DB'].save_job_result(job_result)
@@ -134,8 +133,10 @@ def predict_ecpred(job_idx, input_enzymes, output_path, req_seq_file_path, resul
             "job_idx": job_idx,
             "methods": "ECPred",
             "query_id": query_id,
+            "query_description": enzyme['description'],
             "sequence": enzyme['sequence'],
-            "ec_number": ecpred_result[query_id]['EC']
+            "ec_number": ecpred_result[query_id]['EC'],
+            "accuracy": ecpred_result[query_id]['ACTIVITY']
         }
 
         current_app.config['DB'].save_job_result(job_result)
@@ -161,7 +162,39 @@ def predict_ecami(job_idx, input_enzymes, output_path, req_seq_file_path, result
                    shell=True, stdout=ecami_log_file, stderr=subprocess.STDOUT)
     ecami_log_file.close()
 
-    result.update({'eCAMI': None})
+    # Get Result
+    ecami_result = {}
+
+    # with open(ecami_output_path + "/result.txt", 'r') as f:
+    #     header = next(f)
+    #     for line in f:
+    #         line = line.strip().split('\t')
+    #
+    #         query_id = line[0]
+    #         predicted_ec = line[1]
+    #         activity = float(line[2])
+    #
+    #         ecami_result[query_id] = {"EC": predicted_ec, "ACTIVITY": activity}
+
+    for enzyme in input_enzymes:
+        query_id = enzyme['id']
+
+        if query_id not in ecami_result:
+            ecami_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
+
+        job_result = {
+            "job_idx": job_idx,
+            "methods": "eCAMI",
+            "query_id": query_id,
+            "query_description": enzyme['description'],
+            "sequence": enzyme['sequence'],
+            "ec_number": ecami_result[query_id]['EC'],
+            "accuracy": ecami_result[query_id]['ACTIVITY']
+        }
+
+        current_app.config['DB'].save_job_result(job_result)
+
+    result.update({'eCAMI': ecami_result})
 
 
 def predict_detect_v2(job_idx, input_enzymes, output_path, req_seq_file_path, result):
@@ -208,8 +241,10 @@ def predict_detect_v2(job_idx, input_enzymes, output_path, req_seq_file_path, re
             "job_idx": job_idx,
             "methods": "DETECTv2",
             "query_id": query_id,
+            "query_description": enzyme['description'],
             "sequence": enzyme['sequence'],
-            "ec_number": detect_v2_result[query_id]['EC']
+            "ec_number": detect_v2_result[query_id]['EC'],
+            "accuracy": detect_v2_result[query_id]['ACTIVITY']
         }
 
         current_app.config['DB'].save_job_result(job_result)
