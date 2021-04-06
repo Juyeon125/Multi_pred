@@ -176,8 +176,7 @@
 
                 const detect_v2_result = res['DETECTv2'];
                 for (let i = 0; i < detect_v2_result.length; i++) {
-                    if (i === 0) create_query_result(detect_v2_result[i], detect_v2_body, false);
-                    else create_query_result(detect_v2_result[i], detect_v2_body, true);
+                    create_query_result(detect_v2_result[i], detect_v2_body, i !== 0)
                 }
 
                 detect_v2_body.append(create_show_logs_button("{{ job.idx }}", "DETECTv2"));
@@ -193,13 +192,29 @@
 
                 const ecami_result = res['eCAMI'];
                 for (let i = 0; i < ecami_result.length; i++) {
-                    if (i === 0) create_query_result(ecami_result[i], ecami_body, false);
-                    else create_query_result(ecami_result[i], ecami_body, true);
+                    create_query_result(ecami_result[i], ecami_body, i !== 0)
                 }
 
                 ecami_body.append(create_show_logs_button("{{ job.idx }}", "eCAMI"));
             }
             reload = reload || res['eCAMI'].length === 0
+            // endregion
+
+            // region [ Draw AllEC Result ]
+            const allec_root = $("li#allec");
+            const allec_body = allec_root.find(".ph-body");
+            if (res['AllEC'].length !== 0 && allec_body.find(".skeleton-heading").length > 0) {
+                allec_body.empty();
+
+                const allec_result = res['AllEC'];
+                for (let i = 0; i < allec_result.length; i++) {
+                    if (i === 0) create_query_result(allec_result[i], allec_body, false);
+                    else create_query_result(allec_result[i], allec_body, true);
+                }
+
+                allec_body.append(create_show_logs_button("{{ job.idx }}", "AllEC"));
+            }
+            reload = reload || res['AllEC'].length === 0
             // endregion
 
             if (reload) intervalIdx = setInterval(get_predict_result, 2000);

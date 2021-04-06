@@ -6,6 +6,45 @@ from flask import current_app
 
 from app.preprocess import get_deepec_path, get_ecpred_path, get_ecami_path, get_detect_v2_path
 
+def predict_allec(request_sequence, ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
+    ec_list = []
+    acc_list = []
+    s_list = []
+    re_list = []
+
+    ec_list.append(ec_1)
+    ec_list.append(ec_2)
+    ec_list.append(ec_3)
+    acc_list.append(acc_1)
+    acc_list.append(acc_2)
+    acc_list.append(acc_3)
+
+    # S값 구하기
+    for i in ec_list:
+        cnt = ec_list.count(i)
+        s_list.append(cnt / 3)
+
+    # R값 구하기
+    for i in range(len(ec_list)):
+        temp = s_list[i] * acc_list[i]
+        re_list.append(temp)
+
+    sum_relist = sum(re_list)
+    finre_list = []
+
+    for i in range(len(ec_list)):
+        temp = re_list[i] / sum_relist
+        finre_list.append(round(temp, 3))
+
+    for v in range(0, len(ec_list)):
+        if (v == re_list.index(max(re_list))):
+            final_ec = ec_list[v]
+    result = {}
+
+    result[request_sequence] = {"EC": final_ec, "ACTIVITY": 0.0}
+
+    return result
+
 
 def predict_deepec(job_idx, input_enzymes, output_path, req_seq_file_path, result):
     deepec_execute_path = get_deepec_path() + "/deepec.py"
@@ -285,4 +324,30 @@ def predict_all_methods(job, request_sequence, output_path, request_seq_file_pat
     api_result['DETECTv2'] = result['DETECTv2']
     api_result['eCAMI'] = result['eCAMI']
 
-    print(api_result)
+    for req_sequence in request_sequence:
+        input_seq = req_sequence['id']
+
+        ec1 = api_result['DeepEC'][input_seq]['EC']
+        ec2 = api_result['ECPred'][input_seq]['EC']
+        ec3 = api_result['DETECTv2'][input_seq]['EC']
+
+        acc1 = api_result['DeepEC'][input_seq]['ACTIVITY']
+        acc2 = api_result['ECPred'][input_seq]['ACTIVITY']
+        acc3 = api_result['DETECTv2'][input_seq]['ACTIVITY']
+
+        allec_result = predict_allec(input_seq, ec1, ec2, ec3, acc1, acc2, acc3)
+
+        job_result = {
+            "job_idx": job['idx'],
+            "methods": "AllEC",
+            "query_id": input_seq,
+            "query_description": req_sequence['description'],
+            "sequence": req_sequence['sequence'],
+            "ec_number": allec_result[input_seq]['EC'],
+            "accuracy": allec_result[input_seq]['ACTIVITY']
+        }
+
+        result = {}
+        result.update({'AllEC': allec_result})
+
+        current_app.config['DB'].save_job_result(job_result)

@@ -94,89 +94,6 @@ def predict_all():
     return api_result
 
 
-@app.route('/search_page')
-def search_page():
-    if 'username' in session:
-        result = '%s' % escape(session['username'])
-        return render_template('search.html', loginId=result)
-    else:
-        session['username'] = ''
-        result = '%s' % escape(session['username'])
-        return redirect('/search_page')
-
-
-@app.route('/mypage')
-def mypage():
-    if 'username' in session:
-        result = '%s' % escape(session['username'])
-        content = mysql_dao.get_saveInfo_Select(result)
-        return render_template('mypage.html', loginId=result, content=content)
-    else:
-        session['username'] = ''
-        result = '%s' % escape(session['username'])
-    return redirect('/')
-
-
-@app.route('/find_account')
-def find_account():
-    return render_template('find_account.html')
-
-
-@app.route('/ecFunction_page')
-def ecFunction_page():
-    content = mysql_dao.get_tableSelect()
-    if 'username' in session:
-        result = '%s' % escape(session['username'])
-        return render_template('ec_function.html', loginId=result, content=content)
-    else:
-        session['username'] = ''
-        result = '%s' % escape(session['username'])
-    return redirect('/ecFunction_page')
-
-
-@app.route("/login_route", methods=['GET', 'POST'])
-def login_route():
-    if request.method == "POST":
-        reqid = request.form["id"]
-        reqpw = request.form["pw"]
-        content = mysql_dao.get_dbSelect_login(reqid, reqpw)
-        if (content != 'fail'):
-            result = content["email"]
-            session['username'] = result
-        else:
-            result = "fail"
-    return result
-
-
-@app.route("/password_route", methods=['GET', 'POST'])
-def password_route():
-    if request.method == "POST":
-        reqid = request.form["id"]
-        reqname = request.form["name"]
-        content = mysql_dao.get_dbSelect_password(reqid, reqname)
-    return content
-
-
-@app.route("/logout")
-def logout_route():
-    session.pop('username', None)
-    return redirect(request.args.get('url'))
-
-
-@app.route('/register_route', methods=['GET', 'POST'])
-def register_route():
-    if request.method == "POST":
-        reqid = request.form["id"]
-        reqpw = request.form["pw"]
-        reqfi = request.form["first"]
-        reqla = request.form["last"]
-        content = mysql_dao.get_dbInsert_register(reqid, reqpw, reqfi, reqla)
-    else:
-        content = ''
-
-    return content
-
-
 @app.route("/contact_page", methods=['post', 'get'])
 def email_test():
     if request.method == 'POST':
@@ -220,7 +137,7 @@ def fun(ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
     acc_list.append(acc_2)
     acc_list.append(acc_3)
 
-    # S값 구하기
+    # D값 구하기
     for i in ec_list:
         cnt = ec_list.count(i)
         s_list.append(cnt / 3)
@@ -247,15 +164,3 @@ def fun(ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
                     "final_name": rec_ec[0], "final_reac": rec_ec[1]}
 
     return final_result
-
-
-if __name__ == '__main__':
-    preprocess_deepec()
-    preprocess_ecpred()
-    preprocess_ecami()
-    preprocess_detectv2()
-
-    app.debug = True
-    app.use_reloader = True
-    app.secret_key = os.urandom(12).hex()
-    app.run(debug=True)

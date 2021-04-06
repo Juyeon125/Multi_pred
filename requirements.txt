@@ -1,4 +1,3 @@
-aniso8601==9.0.1
 biopython==1.78
 blinker==1.4
 cached-property==1.5.2

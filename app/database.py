@@ -163,7 +163,8 @@ class Database:
             "DeepEC": [],
             "ECPred": [],
             "DETECTv2": [],
-            "eCAMI": []
+            "eCAMI": [],
+            "AllEC": []
         }
 
         for row in rows:
