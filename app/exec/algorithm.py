@@ -6,6 +6,7 @@ from flask import current_app
 
 from app.preprocess import get_deepec_path, get_ecpred_path, get_ecami_path, get_detect_v2_path
 
+
 def predict_allec(request_sequence, ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
     ec_list = []
     acc_list = []
@@ -346,8 +347,5 @@ def predict_all_methods(job, request_sequence, output_path, request_seq_file_pat
             "ec_number": allec_result[input_seq]['EC'],
             "accuracy": allec_result[input_seq]['ACTIVITY']
         }
-
-        result = {}
-        result.update({'AllEC': allec_result})
 
         current_app.config['DB'].save_job_result(job_result)

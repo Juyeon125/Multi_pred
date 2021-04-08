@@ -254,3 +254,39 @@ class Database:
             return result_list
 
         return []
+
+    def find_predicted_list(self, user_idx):
+        cursor = None
+        sql = "select idx, job_idx, query_id, query_description, ec_number, modified_datetime from job_result where job_idx in (select idx from job where user_idx = %s) and methods = 'AllEC' order by modified_datetime desc"
+        var = user_idx
+
+        try:
+            cursor = self.get_cursor()
+            cursor.execute(sql, var)
+        finally:
+            cursor.close()
+
+        result = {
+            "job_id_list": set(),
+            "job_data": {}
+        }
+
+        if cursor.rowcount > 0:
+            row = cursor.fetchall()
+            for row_val in row:
+                job_idx = row_val[1]
+                result['job_id_list'].add(job_idx)
+
+                if job_idx not in result['job_data']:
+                    result['job_data'][job_idx] = []
+
+                result['job_data'][job_idx].append({
+                    "idx": row_val[0],
+                    "query_id": row_val[2],
+                    "query_description": row_val[3],
+                    "ec_number": row_val[4],
+                    "modified_datetime": row_val[5]
+                })
+
+        result['job_id_list'] = list(result['job_id_list'])
+        return result

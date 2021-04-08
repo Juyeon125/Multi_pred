@@ -162,6 +162,21 @@ def user_predict():
     return render_template("user_predict.html")
 
 
+@a.route("/user_predict.do", methods=['GET'])
+def user_predict_async():
+    db = current_app.config['DB']
+
+    if 'user' in session:
+        user = session['user']
+    else:
+        user = None
+
+    if user is None:
+        raise BadRequestError(code=403, message="Should be sign in!")
+
+    return db.find_predicted_list(user['user_idx'])
+
+
 @a.route("/predict_hist", methods=['GET'])
 def predict_hist():
     db = current_app.config['DB']
@@ -210,4 +225,3 @@ def predict_show_log():
         log_content = "".join(log_content)
 
     return {"result": True, "data": log_content}
-

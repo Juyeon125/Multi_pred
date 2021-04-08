@@ -1,6 +1,8 @@
 import os
 import subprocess
-from datetime import datetime
+from flask import current_app
+
+from app.preprocess import get_deepec_path, get_ecpred_path, get_ecami_path, get_detect_v2_path
 
 import pandas as pd
 from sklearn.metrics import precision_score, recall_score
@@ -45,153 +47,212 @@ def fun(ec_1, ec_2, ec_3, acc_1, acc_2, acc_3):
     return final_result
 
 
-def predict_detect(input_seq, result):
-    timestamp = str(round(datetime.utcnow().timestamp() * 1000))
+def predict_deepec(input_enzymes, output_path, req_seq_file_path, result):
+    deepec_execute_path = get_deepec_path() + "/deepec.py"
+    deepec_output_path = os.path.join(output_path, "DeepEC")
+    os.makedirs(deepec_output_path)
 
-    input_path = f'/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Input/{timestamp}.fasta'
-    with open(input_path, 'w') as file:
-        file.write('>Sample\n' + input_seq)
+    # Execute DeepEC
+    deepec_log_path = f"{deepec_output_path}/DeepEC.log"
+    deepec_log_file = open(deepec_log_path, "w+")
+    subprocess.call(f"export PATH={get_deepec_path()}/diamond:$PATH;"
+                    f"{get_deepec_path()}/venv/bin/python "
+                    f"{deepec_execute_path} "
+                    f"-i {req_seq_file_path} "
+                    f"-o {deepec_output_path}", shell=True, stdout=deepec_log_file, stderr=subprocess.STDOUT)
+    deepec_log_file.close()
 
-    output_base_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output"
-    output_default_file_path = f"{output_base_path}/{timestamp}_detect_output.out"
+    # Get Digit3 Result
+    digit3_path = os.path.join(deepec_output_path, "log_files", "3digit_EC_prediction.txt")
+    digit3_result = {}
+    with open(digit3_path, 'r') as file:
+        header = next(file)
+        for res in file:
+            res = res.strip().split('\t')
+            query_id = res[0]
+            predicted_ec = res[1]
 
-    detect_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/DETECTv2/detect.py"
+            if predicted_ec != "EC number not predicted":
+                digit3_result[query_id] = {"EC": predicted_ec[3:], "ACTIVITY": float(res[2])}
+            else:
+                digit3_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
 
-    subprocess.run(["python", detect_path, input_path,
-                    "--output_file", output_default_file_path,
-                    "--num_threads", "4"])
+    # Get Digit4 Result
+    digit4_path = os.path.join(deepec_output_path, "log_files", "4digit_EC_prediction.txt")
+    digit4_result = {}
+    with open(digit4_path, 'r') as file:
+        header = next(file)
+        for res in file:
+            res = res.strip().split('\t')
+            query_id = res[0]
+            predicted_ec = res[1]
 
-    file = open(output_default_file_path, 'r')
+            if predicted_ec != "EC number not predicted":
+                digit4_result[query_id] = {"EC": predicted_ec[3:], "ACTIVITY": float(res[2])}
+            else:
+                digit4_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
 
-    header = next(file)
-    detect_ec = None
-    detect_acc = 0.0
+    # Process Final Result
+    final_result = {}
 
-    try:
-        for line in file:
-            line = line.strip().split("\t")
-            detect_ec = line[1]
-            detect_acc = float(line[2])
-            break
-    except StopIteration:
-        detect_ec = None
+    for enzyme in input_enzymes:
+        query_id = enzyme['id']
 
-    if detect_ec is None:
-        detect_result_json = {"detect_ec": "Unpredictable", "detect_acc": 0.0, "detect_name": "", "detect_reac": ""}
-    else:
-        detect_result_json = {"detect_ec": detect_ec, "detect_acc": detect_acc}
+        try:
+            digit3 = digit3_result[query_id]
+            digit4 = digit4_result[query_id]
 
-    result.update({'DETECT': detect_result_json})
+            digit3_ec = digit3['EC']
+            digit4_ec = digit4['EC']
 
+            if digit3_ec is None or digit4_ec is None:
+                raise ValueError()
 
-def predict_ecami(input_seq, result):
-    timestamp = str(round(datetime.utcnow().timestamp() * 1000))
-    ecami_input_path = f'/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Input/{timestamp}.fasta'
+            if digit3_ec != '.'.join(digit4_ec.split('.')[:3]):
+                raise ValueError()
 
-    file = open(ecami_input_path, 'w')
-    file.write('>Sample\n' + input_seq)
-    file.close()
+            ec_activity = digit3['ACTIVITY'] * digit4['ACTIVITY']
+            ec_number = digit4_ec
 
-    ecami_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/eCAMI"
-    ecami_execute_path = os.path.join(ecami_path, "prediction.py")
-    ecami_kmer_db_path = os.path.join(ecami_path, "CAZyme")
-    ecami_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
-                                     f"{timestamp}_ecami_output.txt")
+            final_result[query_id] = {"EC": ec_number, "ACTIVITY": ec_activity}
+        except KeyError:
+            final_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
+        except ValueError:
+            final_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
 
-    subprocess.run(["python3", ecami_execute_path,
-                    "-input", ecami_input_path,
-                    "-kmer_db", ecami_kmer_db_path,
-                    "-output", ecami_output_path])
+        job_result = {
+            "ec_number": final_result[query_id]['EC'],
+            "accuracy": final_result[query_id]['ACTIVITY']
+        }
 
-    file = open(ecami_output_path, 'r')
-    s = file.read()
-    if s == "":
-        ecami_result_json = {"ecami_ec": "Unpredictable", "ecami_name": "", "ecami_reac": ""}
-    else:
-        s_split = s.split("\t")
-        s_double_split = s_split[2].split("|")
-        s_result_split = s_double_split[3].split(":")
-
-        ecami_ec = s_result_split[0]
-
-        ecami_result_json = {"ecami_ec": ecami_ec}
-
-    file.close()
-
-    result.update({'eCAMI': ecami_result_json})
-
-
-def predict_ecpred(input_seq, result):
-    timestamp = str(round(datetime.utcnow().timestamp() * 1000))
-    ecpred_input_path = f'/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Input/{timestamp}.fasta'
-
-    file = open(ecpred_input_path, 'w')
-    file.write('>Sample\n' + input_seq)
-    file.close()
-
-    ecpred_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/ECPred/"
-    ecpred_execute_path = os.path.join(ecpred_path, "ECPred.jar")
-    ecpred_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
-                                      f"{timestamp}_ecpred_output.tsv")
-
-    subprocess.run(["java", "-jar", ecpred_execute_path,
-                    "blast", ecpred_input_path,
-                    ecpred_path, "temp/",
-                    ecpred_output_path])
-
-    file = open(ecpred_output_path, 'r')
-    result_ecpred = file.read()
-
-    result_ecpred_split = result_ecpred.split("\n")
-    ec_number_ecpred = result_ecpred_split[1].split("\t")
-    ecpred_ec = ec_number_ecpred[1]
-    ecpred_acc = float(ec_number_ecpred[2])
-
-    ecpred_result_json = {"ecpred_ec": ecpred_ec, "ecpred_acc": ecpred_acc}
-
-    file.close()
-
-    result.update({'ECPred': ecpred_result_json})
+    result.update({'DeepEC': final_result})
 
 
-def predict_deepec(input_seq, result):
-    timestamp = str(round(datetime.utcnow().timestamp() * 1000))
-    deepec_input_path = f'/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Input/{timestamp}.fasta'
+def predict_ecpred(input_enzymes, output_path, req_seq_file_path, result):
+    ecpred_execute_path = get_ecpred_path() + "/ECPred.jar"
+    ecpred_output_path = os.path.join(output_path, "ECPred")
+    os.makedirs(ecpred_output_path)
 
-    file = open(deepec_input_path, 'w')
-    file.write('>Sample\n' + input_seq)
-    file.close()
+    # Execute ECPred
+    ecpred_log_path = f"{ecpred_output_path}/ECPred.log"
+    ecpred_log_file = open(ecpred_log_path, "w+")
+    subprocess.run(f"cd {get_ecpred_path()};"
+                   f"java -jar {ecpred_execute_path} "
+                   f"weighted "
+                   f"{req_seq_file_path} "
+                   f"{get_ecpred_path()}/ "
+                   f"temp/ "
+                   f"{ecpred_output_path}/results.tsv", shell=True, stdout=ecpred_log_file, stderr=subprocess.STDOUT)
+    ecpred_log_file.close()
 
-    deepec_path = "/home/juyeon/Program/Multi_Pred/multi_pred/vendor/deepec"
-    deepec_execute_path = os.path.join(deepec_path, "deepec.py")
-    deepec_output_path = os.path.join("/home/juyeon/Program/Multi_Pred/multi_pred/vendor/Output/",
-                                      f"{timestamp}_deepec_output")
+    # Get Result
+    ecpred_result = {}
+    with open(ecpred_output_path + "/results.tsv", "r") as f:
+        header = next(f)
+        for line in f:
+            line = line.strip().split('\t')
 
-    subprocess.run(["python3", deepec_execute_path,
-                    "-i", deepec_input_path,
-                    "-o", deepec_output_path])
+            query_id = line[0].split()[0]
+            predicted_ec = line[1]
+            activity = float(line[2])
 
-    deepec_output_path = os.path.join(deepec_output_path, "log_files", "4digit_EC_prediction.txt")
+            ecpred_result[query_id] = {"EC": predicted_ec, "ACTIVITY": activity}
+    for enzyme in input_enzymes:
+        query_id = enzyme['id']
+        if query_id not in ecpred_result:
+            ecpred_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
 
-    file = open(deepec_output_path, 'r')
-    s = file.read()
-    s_split = s.split("\n")
-    s_double_split = s_split[1].split(":")
+        job_result = {
+            "ec_number": ecpred_result[query_id]['EC'],
+            "accuracy": ecpred_result[query_id]['ACTIVITY']
+        }
 
-    if len(s_double_split) < 2:
-        deepec_result_json = {"deepec_ec": "UnPredictable", "deepec_acc": 0.0,
-                              "deepec_name": "", "deepec_reac": ""}
+    result.update({'ECPred': ecpred_result})
 
-    else:
-        s_triple_split = s_double_split[1].split("\t")
-        deepec_ec = s_triple_split[0]
-        deepec_acc = float(s_triple_split[1])
 
-        deepec_result_json = {"deepec_ec": deepec_ec, "deepec_acc": deepec_acc}
+def predict_ecami(input_enzymes, output_path, req_seq_file_path, result):
+    ecami_execute_path = get_ecami_path() + "/prediction.py"
+    ecami_output_path = os.path.join(output_path, "eCAMI")
+    os.makedirs(ecami_output_path)
 
-    file.close()
+    # Execute eCAMI
+    ecami_log_path = f"{ecami_output_path}/eCAMI.log"
+    ecami_log_file = open(ecami_log_path, "w+")
+    subprocess.run(f"cd {get_ecami_path()};"
+                   f"{get_ecami_path()}/venv/bin/python "
+                   f"{ecami_execute_path} "
+                   f"-jobs 4 "
+                   f"-input {req_seq_file_path} "
+                   f"-kmer_db CAZyme "
+                   f"-output {ecami_output_path}/result.txt",
+                   shell=True, stdout=ecami_log_file, stderr=subprocess.STDOUT)
+    ecami_log_file.close()
 
-    result.update({'DeepEC': deepec_result_json})
+    # Get Result
+    ecami_result = {}
+
+    for enzyme in input_enzymes:
+        query_id = enzyme['id']
+
+        if query_id not in ecami_result:
+            ecami_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
+
+        job_result = {
+            "ec_number": ecami_result[query_id]['EC'],
+            "accuracy": ecami_result[query_id]['ACTIVITY']
+        }
+
+        current_app.config['DB'].save_job_result(job_result)
+
+    result.update({'eCAMI': ecami_result})
+
+
+def predict_detect_v2(input_enzymes, output_path, req_seq_file_path, result):
+    detect_v2_execute_path = get_detect_v2_path() + "/detect.py"
+    detect_v2_output_path = os.path.join(output_path, "DETECTv2")
+    os.makedirs(detect_v2_output_path)
+
+    # Execute DETECTv2
+    detect_v2_log_path = f"{detect_v2_output_path}/DETECTv2.log"
+    detect_v2_log_file = open(detect_v2_log_path, "w+")
+    subprocess.run(f"export PATH="
+                   f"{get_ecpred_path()}/lib/ncbi-blast-2.7.1+/bin:"
+                   f"{get_ecpred_path()}/lib/EMBOSS-6.5.7/emboss:$PATH;"
+                   f"{get_detect_v2_path()}/venv/bin/python "
+                   f"{detect_v2_execute_path} "
+                   f"{req_seq_file_path} "
+                   f"--output_file {detect_v2_output_path}/result.out "
+                   f"--top_predictions_file {detect_v2_output_path}/result.top "
+                   f"--fbeta_file {detect_v2_output_path}/result.f1 "
+                   f"--num_threads {os.cpu_count()} "
+                   f"--verbose "
+                   f"--beta 1", shell=True, stdout=detect_v2_log_file, stderr=subprocess.STDOUT)
+
+    detect_v2_log_file.close()
+
+    # Get Result
+    detect_v2_result = {}
+    with open(detect_v2_output_path + "/result.out", 'r') as f:
+        header = next(f)
+        for line in f:
+            line = line.strip().split('\t')
+
+            query_id = line[0]
+            predicted_ec = line[1]
+            activity = float(line[2])
+
+            detect_v2_result[query_id] = {"EC": predicted_ec, "ACTIVITY": activity}
+    for enzyme in input_enzymes:
+        query_id = enzyme['id']
+        if query_id not in detect_v2_result:
+            detect_v2_result[query_id] = {"EC": None, "ACTIVITY": 0.0}
+
+        job_result = {
+            "ec_number": detect_v2_result[query_id]['EC'],
+            "accuracy": detect_v2_result[query_id]['ACTIVITY']
+        }
+
+    result.update({'DETECTv2': detect_v2_result})
 
 
 seq_list = []
@@ -215,24 +276,24 @@ for i in data.EC[20:40]:
 
 for i in range(len(data.SEQ[20:40])):
     predict_deepec(seq_list[i], result=temp_result)
-    deepec_result = temp_result['DeepEC']['deepec_ec']
+    deepec_result = temp_result['DeepEC']['ec_number']
     deepec_pred.append(deepec_result)
 
     predict_ecpred(seq_list[i], result=temp_result)
-    ecpred_result = temp_result['ECPred']['ecpred_ec']
+    ecpred_result = temp_result['ECPred']['ec_number']
     ecpred_pred.append(ecpred_result)
 
-    predict_detect(seq_list[i], result=temp_result)
-    detect_result = temp_result['DETECT']['detect_ec']
+    predict_detect_v2(seq_list[i], result=temp_result)
+    detect_result = temp_result['DETECT']['ec_number']
     detect_pred.append(detect_result)
 
     predict_ecami(seq_list[i], result=temp_result)
-    ecami_result = temp_result['eCAMI']['ecami_ec']
+    ecami_result = temp_result['eCAMI']['ec_number']
     ecami_pred.append(ecami_result)
 
-    algorithm_result = fun(temp_result['DeepEC']['deepec_ec'], temp_result['ECPred']['ecpred_ec'],
-                           temp_result['DETECT']['detect_ec'], temp_result['DeepEC']['deepec_acc'],
-                           temp_result['ECPred']['ecpred_acc'], temp_result['DETECT']['detect_acc'])
+    algorithm_result = fun(temp_result['DeepEC']['ec_number'], temp_result['ECPred']['accuracy'],
+                           temp_result['DETECT']['ec_number'], temp_result['DeepEC']['accuracy'],
+                           temp_result['ECPred']['ec_number'], temp_result['DETECT']['accuracy'])
 
     algorithm_pred.append(algorithm_result["final_ec"])
 
