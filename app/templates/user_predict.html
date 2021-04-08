@@ -19,35 +19,6 @@
                         Not found predicted list
                     </div>
                 </li>
-                <li class="ph-item">
-                    <div class="ph-header" type="button" data-bs-toggle="collapse"
-                         data-bs-target="#collapse_16177238301224006"
-                         aria-expanded="true" aria-controls="collapse_16177238301224006">
-                        16177238301224006
-                    </div>
-                    <div class="ph-body row m-0 p-3 collapse" id="collapse_16177238301224006">
-                        <div class="col-md-4 markdown"><h3>Query ID</h3>
-                            <p>ABCD</p></div>
-                        <div class="col-md-4 markdown"><h3>Date</h3>
-                            <p>2020-01-23</p></div>
-                        <div class="col-md-4 markdown"><h3>Predicted EC Number</h3>
-                            <p>1.1.1.1</p></div>
-                        <hr class="col-12 m-0 my-3"/>
-                        <div class="col-md-4 markdown"><h3>Query ID</h3>
-                            <p>ABCD</p></div>
-                        <div class="col-md-4 markdown"><h3>Date</h3>
-                            <p>2020-01-23</p></div>
-                        <div class="col-md-4 markdown"><h3>Predicted EC Number</h3>
-                            <p>1.1.1.1</p></div>
-                        <hr class="col-12 m-0 my-3"/>
-                        <div class="col-md-4 markdown"><h3>Query ID</h3>
-                            <p>ABCD</p></div>
-                        <div class="col-md-4 markdown"><h3>Date</h3>
-                            <p>2020-01-23</p></div>
-                        <div class="col-md-4 markdown"><h3>Predicted EC Number</h3>
-                            <p>1.1.1.1</p></div>
-                    </div>
-                </li>
             </ul>
         </div>
     </section>
@@ -100,7 +71,7 @@
 
                 li_root.append(item_header);
 
-                const item_body = $('<div class="ph-body row m-0 p-3 collapse" id="collapse_' + job_idx + '">');
+                const item_body = $('<div class="ph-body row m-0 p-3 collapse" id="collapse_' + job_idx + '"></div>');
 
                 for (let i = 0; i < job_contents.length; i++) {
                     const job_content = job_contents[i];
