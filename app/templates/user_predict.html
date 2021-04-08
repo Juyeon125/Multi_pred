@@ -12,13 +12,40 @@
     <section id="user_predict" class="card my-3">
         <div class="card-body">
             <div class="mb-1 text-h2">Predicted List</div>
-            <ul class="list mt-3">
-                <li id="job" class="ph-item">
+            <ul id="job" class="list mt-3">
+                <li class="ph-item">
                     <div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result"
                          aria-expanded="true" aria-controls="collapse_result">
                         Not found predicted list
                     </div>
-                    <div class="ph-body p-3 collapse" id="none">
+                </li>
+                <li class="ph-item">
+                    <div class="ph-header" type="button" data-bs-toggle="collapse"
+                         data-bs-target="#collapse_16177238301224006"
+                         aria-expanded="true" aria-controls="collapse_16177238301224006">
+                        16177238301224006
+                    </div>
+                    <div class="ph-body row m-0 p-3 collapse" id="collapse_16177238301224006">
+                        <div class="col-md-4 markdown"><h3>Query ID</h3>
+                            <p>ABCD</p></div>
+                        <div class="col-md-4 markdown"><h3>Date</h3>
+                            <p>2020-01-23</p></div>
+                        <div class="col-md-4 markdown"><h3>Predicted EC Number</h3>
+                            <p>1.1.1.1</p></div>
+                        <hr class="col-12 m-0 my-3"/>
+                        <div class="col-md-4 markdown"><h3>Query ID</h3>
+                            <p>ABCD</p></div>
+                        <div class="col-md-4 markdown"><h3>Date</h3>
+                            <p>2020-01-23</p></div>
+                        <div class="col-md-4 markdown"><h3>Predicted EC Number</h3>
+                            <p>1.1.1.1</p></div>
+                        <hr class="col-12 m-0 my-3"/>
+                        <div class="col-md-4 markdown"><h3>Query ID</h3>
+                            <p>ABCD</p></div>
+                        <div class="col-md-4 markdown"><h3>Date</h3>
+                            <p>2020-01-23</p></div>
+                        <div class="col-md-4 markdown"><h3>Predicted EC Number</h3>
+                            <p>1.1.1.1</p></div>
                     </div>
                 </li>
             </ul>
@@ -33,7 +60,7 @@
             dataType: "json",
             success: function (res) {
                 console.log(res);
-                draw_predicted_list(res)
+                draw_predicted_list(res);
             },
             error: function (err) {
                 console.log(err);
@@ -41,39 +68,78 @@
         })
 
         function draw_predicted_list(res) {
-            const list_root = $("#job");
-            const list_head = list_root.find(".ph-header");
-            const list_body = list_root.find(".ph-body");
-            const id_list = res['job_id_list']
-            const job_data = res['job_data']
+            const list_root = $("ul#job");
 
-            if (id_list !== null) {
-                list_head.empty();
-                {#list_body.attr('id', 'collapse_result');#}
-                create_query_result(res, list_root, false)
-            }
-        }
+            if (res.job_id_list.length === 0) return;
 
-        function create_query_result(query_result, list_root, append_hr) {
-            //id list = 예측 기록 갯수
-            //job_data = 한번 예측 할때의 시퀀스 갯수
-            const list_head = $('<div class="ph-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_result" aria-expanded="true" aria-controls="collapse_result"></div')
-            const list_body = $('<div class="ph-body p-3 collapse" id="none">')
-            const id_list = query_result['job_id_list']
-            const job_data = query_result['job_data']
-            const dom_row = $('<div class="row"></div>');
+            list_root.empty();
 
-            for (i = 0; i < id_list.length; i++) {
-                list_root.append(list_head)
-                list_head.append($('<p>Jod ID > ' + id_list[i] + '</p>'));
-                for (j = 0; j < job_data[query_result['job_id_list'][i]].length; j++) {
-                    list_root.append(dom_row)
-                    dom_row.append($('<div class="col-md-6 markdown"><h3>Query ID</h3><p>' + job_data[query_result['job_id_list'][i]][j]['query_id'] + '</p></div>'));
-                    dom_row.append($('<div class="col-md-6 markdown"><h3>Date</h3><p>' + job_data[query_result['job_id_list'][i]][j]['modified_datetime'] + '</p></div>'));
-                    list_body.append(dom_row)
+            for (let i = 0; i < res.job_id_list.length; i++) {
+                const job_idx = res.job_id_list[i];
+                const job_contents = res.job_data[job_idx];
+
+                const li_root = $("<li class='ph-item'></li>");
+
+                const item_header = $('' +
+                    '<div class="ph-header collapsed" type="button" data-bs-toggle="collapse" ' +
+                    '     data-bs-target="#collapse_' + job_idx + '" ' +
+                    '     aria-expanded="false" aria-controls="collapse_' + job_idx + '">' +
+                    '  <p class="d-inline-block">' + job_idx + '</p>' +
+                    '  <p class="d-inline-block clearfix float-end"></p>' +
+                    '</div>');
+
+                const btn_more = $('<button class="btn btn-sm btn-detail" data-idx="' + job_idx + '">Detail</button>');
+                btn_more.click(function (event) {
+                    event.stopImmediatePropagation();
+                    const btn = $(this);
+                    const job_idx = btn.attr("data-idx");
+                    location.href = "/predict_hist?job_idx=" + job_idx;
+                });
+
+                item_header.children().eq(1).append(btn_more);
+
+                li_root.append(item_header);
+
+                const item_body = $('<div class="ph-body row m-0 p-3 collapse" id="collapse_' + job_idx + '">');
+
+                for (let i = 0; i < job_contents.length; i++) {
+                    const job_content = job_contents[i];
+
+                    if (i !== 0) {
+                        const hr_item = $('<hr class="col-12 m-0 my-3"/>')
+                        item_body.append(hr_item);
+                    }
+
+                    const query_id_dom = $('' +
+                        '<div class="col-md-4 markdown">' +
+                        '  <h3>Query ID</h3>' +
+                        '  <p>' + job_content.query_id + '</p>' +
+                        '</div>');
+                    item_body.append(query_id_dom);
+
+                    const query_date_dom = $('' +
+                        '<div class="col-md-4 markdown">' +
+                        '  <h3>Date</h3>' +
+                        '  <p>' + job_content.modified_datetime + '</p>' +
+                        '</div>');
+                    item_body.append(query_date_dom);
+
+                    const predicted_ec_dom = $('' +
+                        '<div class="col-md-4 markdown">' +
+                        '  <h3>Predicted EC Number</h3>' +
+                        '  <p>' + job_content.ec_number + '</p>' +
+                        '</div>');
+                    item_body.append(predicted_ec_dom);
                 }
+
+                li_root.append(item_body);
+
+                list_root.append(li_root);
             }
 
+            $('.collapse').collapse({
+                toggle: false
+            });
         }
     </script>
 {% endblock %}

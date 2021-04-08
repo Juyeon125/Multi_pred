@@ -257,7 +257,7 @@ class Database:
 
     def find_predicted_list(self, user_idx):
         cursor = None
-        sql = "select idx, job_idx, query_id, query_description, ec_number, modified_datetime from job_result where job_idx in (select idx from job where user_idx = %s) and methods = 'AllEC' order by modified_datetime desc"
+        sql = "select idx, job_idx, query_id, query_description, ec_number, modified_datetime from job_result where job_idx in (select idx from job where user_idx = %s) and methods = 'AllEC' order by job_idx desc"
         var = user_idx
 
         try:
@@ -267,7 +267,7 @@ class Database:
             cursor.close()
 
         result = {
-            "job_id_list": set(),
+            "job_id_list": [],
             "job_data": {}
         }
 
@@ -275,7 +275,8 @@ class Database:
             row = cursor.fetchall()
             for row_val in row:
                 job_idx = row_val[1]
-                result['job_id_list'].add(job_idx)
+                if job_idx not in result['job_id_list']:
+                    result['job_id_list'].append(job_idx)
 
                 if job_idx not in result['job_data']:
                     result['job_data'][job_idx] = []
