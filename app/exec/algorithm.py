@@ -1,5 +1,6 @@
 import multiprocessing
 import os
+import time
 import subprocess
 
 from flask import current_app
@@ -55,11 +56,14 @@ def predict_deepec(job_idx, input_enzymes, output_path, req_seq_file_path, resul
     # Execute DeepEC
     deepec_log_path = f"{deepec_output_path}/DeepEC.log"
     deepec_log_file = open(deepec_log_path, "w+")
+    start_time = int(time.time())
     subprocess.call(f"export PATH={get_deepec_path()}/diamond:$PATH;"
                     f"{get_deepec_path()}/venv/bin/python "
                     f"{deepec_execute_path} "
                     f"-i {req_seq_file_path} "
                     f"-o {deepec_output_path}", shell=True, stdout=deepec_log_file, stderr=subprocess.STDOUT)
+    elapsed_time = int(time.time()) - start_time
+    deepec_log_file.write(f"\tElapsed Time: {elapsed_time}s")
     deepec_log_file.close()
 
     # Get Digit3 Result
@@ -143,6 +147,7 @@ def predict_ecpred(job_idx, input_enzymes, output_path, req_seq_file_path, resul
     # Execute ECPred
     ecpred_log_path = f"{ecpred_output_path}/ECPred.log"
     ecpred_log_file = open(ecpred_log_path, "w+")
+    start_time = int(time.time())
     subprocess.run(f"cd {get_ecpred_path()};"
                    f"java -jar {ecpred_execute_path} "
                    f"weighted "
@@ -150,6 +155,8 @@ def predict_ecpred(job_idx, input_enzymes, output_path, req_seq_file_path, resul
                    f"{get_ecpred_path()}/ "
                    f"temp/ "
                    f"{ecpred_output_path}/results.tsv", shell=True, stdout=ecpred_log_file, stderr=subprocess.STDOUT)
+    elapsed_time = int(time.time()) - start_time
+    ecpred_log_file.write(f"\tElapsed Time: {elapsed_time}s")
     ecpred_log_file.close()
 
     # Get Result
@@ -192,14 +199,17 @@ def predict_ecami(job_idx, input_enzymes, output_path, req_seq_file_path, result
     # Execute eCAMI
     ecami_log_path = f"{ecami_output_path}/eCAMI.log"
     ecami_log_file = open(ecami_log_path, "w+")
+    start_time = int(time.time())
     subprocess.run(f"cd {get_ecami_path()};"
                    f"{get_ecami_path()}/venv/bin/python "
                    f"{ecami_execute_path} "
                    f"-jobs 4 "
                    f"-input {req_seq_file_path} "
                    f"-kmer_db CAZyme "
-                   f"-output {ecami_output_path}/result.txt",
-                   shell=True, stdout=ecami_log_file, stderr=subprocess.STDOUT)
+                   f"-output {ecami_output_path}/result.txt", shell=True, stdout=ecami_log_file,
+                   stderr=subprocess.STDOUT)
+    elapsed_time = int(time.time()) - start_time
+    ecami_log_file.write(f"\tElapsed Time: {elapsed_time}s")
     ecami_log_file.close()
 
     # Get Result
@@ -245,6 +255,7 @@ def predict_detect_v2(job_idx, input_enzymes, output_path, req_seq_file_path, re
     # Execute DETECTv2
     detect_v2_log_path = f"{detect_v2_output_path}/DETECTv2.log"
     detect_v2_log_file = open(detect_v2_log_path, "w+")
+    start_time = int(time.time())
     subprocess.run(f"export PATH="
                    f"{get_ecpred_path()}/lib/ncbi-blast-2.7.1+/bin:"
                    f"{get_ecpred_path()}/lib/EMBOSS-6.5.7/emboss:$PATH;"
@@ -257,7 +268,8 @@ def predict_detect_v2(job_idx, input_enzymes, output_path, req_seq_file_path, re
                    f"--num_threads {os.cpu_count()} "
                    f"--verbose "
                    f"--beta 1", shell=True, stdout=detect_v2_log_file, stderr=subprocess.STDOUT)
-
+    elapsed_time = int(time.time()) - start_time
+    detect_v2_log_file.write(f"\tElapsed Time: {elapsed_time}s")
     detect_v2_log_file.close()
 
     # Get Result
