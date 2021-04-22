@@ -10,4 +10,4 @@ class LocalLevelConfig:
 class ProductionLevelConfig:
     ENV = "production"
     DEBUG = False
-    SECRET_KEY = os.urandom(12).hex()
+    SECRET_KEY = "5ae9fc9c349602a1111ef1d4"
