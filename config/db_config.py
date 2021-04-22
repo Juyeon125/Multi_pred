@@ -6,7 +6,7 @@ class LocalConfig:
 
 
 class RemoteConfig:
-    DB_HOST = "127.0.0.1"
-    DB_USER = "root"
+    DB_HOST = "localhost"
+    DB_USER = "allec"
     DB_PASSWORD = "YeBHvwKhgF*YG7YD"
     DB_DATABASE = "allec"
