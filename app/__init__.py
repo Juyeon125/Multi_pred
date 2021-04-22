@@ -2,8 +2,11 @@ from importlib import import_module
 
 from flask import Flask
 
+from app import preprocess
 from app.database import Database
 from app.misc.log import log
+from config.app_config import ProductionLevelConfig
+from config.db_config import RemoteConfig
 
 
 def register_extensions(flask_app: Flask):
@@ -28,6 +31,14 @@ def register_hooks(flask_app: Flask):
 
 
 def create_app(*config_cls) -> Flask:
+    preprocess.preprocess_deepec()
+    preprocess.preprocess_ecpred()
+    preprocess.preprocess_ecami()
+    preprocess.preprocess_detect_v2()
+
+    if len(config_cls) == 0:
+        config_cls = (ProductionLevelConfig, RemoteConfig)
+
     config_cls = [
         config() if isinstance(config, type) else config for config in config_cls
     ]
@@ -48,6 +59,7 @@ def create_app(*config_cls) -> Flask:
     register_hooks(flask_app)
 
     with flask_app.app_context():
-        Database(config.DB_HOST, config.DB_USER, config.DB_PASSWORD, config.DB_DATABASE)
+        c = flask_app.config
+        Database(c['DB_HOST'], c['DB_USER'], c['DB_PASSWORD'], c['DB_DATABASE'])
 
     return flask_app

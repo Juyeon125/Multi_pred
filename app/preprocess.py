@@ -100,10 +100,10 @@ def preprocess_deepec():
         # Download Diamond Program from github
         log(message=f"Download Diamond Program...", keyword="INFO")
         if platform.system() == "Linux":
-            diamond_url = "https://download.sharenshare.kr/allec/diamond-linux64.tar.gz"
+            diamond_url = "https://download.cpslab.tech/diamond-linux64.tar.gz"
             compressed_file_name = "diamond-linux64.tar.gz"
         elif platform.system() == "Windows":
-            diamond_url = "https://download.sharenshare.kr/allec/diamond-windows.zip"
+            diamond_url = "https://download.cpslab.tech/diamond-windows.zip"
             compressed_file_name = "diamond-windows.zip"
         else:
             raise OSError("Unsupported OS")
@@ -151,7 +151,7 @@ def preprocess_ecpred():
 
         # Download ECPred Program
         log(message=f"Download ECPred Program...", keyword="INFO")
-        ecpred_url = "https://download.sharenshare.kr/allec/ECPred.tar.gz"
+        ecpred_url = "https://download.cpslab.tech/ECPred.tar.gz"
         response = requests.get(ecpred_url, stream=True)
         total_size_in_bytes = int(response.headers.get('content-length', 0))
         block_size = 1024
@@ -232,10 +232,9 @@ def preprocess_detect_v2():
     if not os.path.exists(detect_v2_path):
         os.makedirs(detect_v2_path)
 
-
         # Download DETECTv2 Program
         log(message=f"Download DETECTv2 Program...", keyword="INFO")
-        detect_v2_url = "https://download.sharenshare.kr/allec/DETECTv2.tar.gz"
+        detect_v2_url = "https://download.cpslab.tech/DETECTv2.tar.gz"
         response = requests.get(detect_v2_url, stream=True)
         total_size_in_bytes = int(response.headers.get('content-length', 0))
         block_size = 1024
