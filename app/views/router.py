@@ -3,12 +3,14 @@ import os
 import time
 
 from Bio import SeqIO
-from flask import current_app, render_template, session, request, jsonify, redirect
+from flask import Flask, current_app, render_template, session, request, jsonify, redirect
 
 from app.blueprints import app as a
 from app.exec.algorithm import predict_all_methods
 from app.extensions.extension import NotFoundError, BadRequestError
 
+import smtplib
+from email.mime.text import MIMEText
 
 @a.context_processor
 def load_logged_in_user():
@@ -43,6 +45,23 @@ def introduction():
 @a.route('/contact', methods=['GET'])
 def contact():
     return render_template('contact_page.html')
+
+
+def sendMail(name, sender, receiver, msg):
+    smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    smtp.login(receiver, 'ftuvxkgxifbejote')
+    msg = MIMEText(msg)
+    msg['Subject'] = name + '의 All EC 문의메일'
+    smtp.sendmail(sender, receiver, msg.as_string())
+    smtp.quit()
+
+@a.route("/contact.do", methods=['POST'])
+def contact_async():
+    form_data = request.get_json()
+
+    sendMail(form_data['user_name'], form_data['user_email'], 'juyeone125@gmail.com', form_data['mail_content'])
+
+    return jsonify({'result': True}), 200
 
 
 @a.route('/about_us', methods=['GET'])

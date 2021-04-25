@@ -31,10 +31,10 @@ def register_hooks(flask_app: Flask):
 
 
 def create_app(*config_cls) -> Flask:
-    preprocess.preprocess_deepec()
-    preprocess.preprocess_ecpred()
-    preprocess.preprocess_ecami()
-    preprocess.preprocess_detect_v2()
+    # preprocess.preprocess_deepec()
+    # preprocess.preprocess_ecpred()
+    # preprocess.preprocess_ecami()
+    # preprocess.preprocess_detect_v2()
 
     if len(config_cls) == 0:
         config_cls = (ProductionLevelConfig, RemoteConfig)

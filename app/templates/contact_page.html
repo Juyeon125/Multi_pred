@@ -76,16 +76,16 @@
 
             sendButton.addClass("btn-loading").prop("disabled", true);
             $.ajax({
-                url: "/send_mail",
+                url: "/contact.do",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 dataType: "json",
                 success: function (res) {
-
+                    sendButton.removeClass("btn-loading").prop("disabled", false);
+                    checkSendButton();
                 },
                 error: function (err) {
-
                 }
             });
         });
